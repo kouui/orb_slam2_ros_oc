@@ -93,7 +93,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/orb_slam2/lib)
 
 # ORB_SLAM
 add_library(${PROJECT_NAME} SHARED
-ros/occupancy/src/ProjectMap.cc
+ros/occupancy/src/ProjectMap_pub.cc
 orb_slam2/src/System.cc
 orb_slam2/src/Tracking.cc
 orb_slam2/src/LocalMapping.cc

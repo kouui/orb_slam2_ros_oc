@@ -13,6 +13,7 @@
 #include <ros/ros.h>
 #include "geometry_msgs/PoseArray.h"
 #include "geometry_msgs/PoseStamped.h"
+#include "nav_msgs/OccupancyGrid.h"
 
 // ORB_SLAM
 #include "System.h"
@@ -31,7 +32,7 @@ namespace ProjectMap
     {
     public:
         Pub (ORB_SLAM2::System* orb_slam_ptr, ros::NodeHandle &node_handle);
-        ~Pub ();
+        ~Pub (){};
 
         void GetAndPublishMsgs ();
 
