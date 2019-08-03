@@ -41,7 +41,6 @@ namespace ProjectMap
         }
     }
 
-    Pub::~Pub () { }
 
     geometry_msgs::PoseArray Pub::GetAllKfsPts ()
     {

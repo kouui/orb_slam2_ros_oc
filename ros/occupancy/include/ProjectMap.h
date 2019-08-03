@@ -32,7 +32,7 @@ namespace ProjectMap
     {
     public:
         Pub (ORB_SLAM2::System* orb_slam_ptr, ros::NodeHandle &node_handle);
-        ~Pub (){};
+        ~Pub (){ };
 
         void GetAndPublishMsgs ();
 
