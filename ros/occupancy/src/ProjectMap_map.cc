@@ -13,8 +13,8 @@ namespace ProjectMap
         node_handle_.param<std::string>("/single_kf_pts_topic", single_kf_pts_topic_param_, "/orb_slam2_mono/single_kf_pts");
 
         // subscriber
-        //single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, SingleCallback);
-        //all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, AllCallback);
+        single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
+        all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, 1, &Map::AllCallback, this);
         // publisher
         grid_map_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map", 1);
 
@@ -55,6 +55,17 @@ namespace ProjectMap
         local_visit_counter_.create(h, w, CV_32SC1);
         local_map_pt_mask_.create(h, w, CV_8UC1);
     }
+
+    void Map::SingleCallback (const geometry_msgs::PoseArray &msg)
+    {
+
+    }
+
+    void Map::AllCallback (const geometry_msgs::PoseArray &msg)
+    {
+
+    }
+
 }
 
 
