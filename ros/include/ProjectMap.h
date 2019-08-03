@@ -33,9 +33,10 @@ namespace ProjectMap
         Pub (ORB_SLAM2::System* orb_slam_ptr, ros::NodeHandle &node_handle);
         ~Pub ();
 
+        void GetAndPublishMsgs ();
+
     protected:
         ORB_SLAM2::System* slam_ptr_;
-        void GetAndPublishMsgs ();
 
     private:
         geometry_msgs::PoseArray GetAllKfsPts ();

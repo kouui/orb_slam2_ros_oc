@@ -112,7 +112,7 @@ namespace ProjectMap
             if ( !pt_ || pt_->isBad() ) continue;
 
             cv::Mat pt_position_ = pt_->GetWorldPos();
-            if (pt_position_.epmty()) continue;
+            if (pt_position_.empty()) continue;
             kf_pts_array_.poses.push_back( TransformFromMapPt_orb2ros(pt_position_) );
         }
 
