@@ -144,6 +144,7 @@ add_dependencies (${PROJECT_NAME}_mono ${PROJECT_NAME} ${PROJECT_NAME}_occupancy
 
 target_link_libraries(${PROJECT_NAME}_mono
 ${LIBS_ROS}
+${PROJECT_NAME}_occupancy
 )
 
 add_executable (${PROJECT_NAME}_stereo
