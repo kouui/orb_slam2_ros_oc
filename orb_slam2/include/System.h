@@ -129,6 +129,10 @@ public:
 
     std::vector<MapPoint*> GetAllMapPoints();
 
+    LoopClosing* getLoopClosing(){ return mpLoopCloser; }
+    Tracking* getTracker(){ return mpTracker; }
+    Map* getMap() { return mpMap; }
+
 private:
     bool SetCallStackSize (const rlim_t kNewStackSize);
 
