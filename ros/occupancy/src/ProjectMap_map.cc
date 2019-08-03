@@ -30,8 +30,8 @@ namespace ProjectMap
         h_ = grid_lim_[1] - grid_lim_[0];
         w_ = grid_lim_[3] - grid_lim_[2];
 
-        norm_fac_[0] = float(h - 1) / float(h);
-        norm_fac_[1] = float(w - 1) / float(w);
+        norm_fac_[0] = float(h_ - 1) / float(h_);
+        norm_fac_[1] = float(w_ - 1) / float(w_);
     }
 
     void Map::CreateCvMat (const unsigned int h, const unsigned int w)
@@ -44,8 +44,8 @@ namespace ProjectMap
         grid_map_msg_.data.resize(h*w);
         grid_map_msg_.info.width = w;
         grid_map_msg_.info.height = h;
-        grid_map_msg_.info.resolution = 1.0/scale_factor_;
-        grid_map_int = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_msg.data.data()));
+        grid_map_msg_.info.resolution = 1.0/scale_fac_;
+        grid_map_int_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_msg_.data.data()));
 
         grid_map_.create(h, w, CV_32FC1);
         grid_map_thresh_.create(h, w, CV_8UC1);
