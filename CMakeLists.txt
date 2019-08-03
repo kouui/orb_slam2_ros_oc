@@ -91,6 +91,7 @@ include(${PROJECT_SOURCE_DIR}/orb_slam2/Thirdparty/g2o/CMakeLists.txt)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/orb_slam2/lib)
 
 add_library(${PROJECT_NAME} SHARED
+ros/src/ProjectMap.cc
 orb_slam2/src/System.cc
 orb_slam2/src/Tracking.cc
 orb_slam2/src/LocalMapping.cc
@@ -126,7 +127,6 @@ target_link_libraries(${PROJECT_NAME} ${BOOST_SERIALIZATION})
 add_executable (${PROJECT_NAME}_mono
 ros/src/MonoNode.cc
 ros/src/Node.cc
-ros/src/ProjectMap.cc
 )
 add_dependencies (${PROJECT_NAME}_mono ${PROJECT_NAME} ${PROJECT_NAME}_gencfg)
 
