@@ -65,6 +65,9 @@ namespace ProjectMap
 
     private:
 
+        void SetParameter ();
+        void CreateCvMat (const unsigned int h, const unsigned int w);
+
         float scale_fac_ = 3;
         float resize_fac_ = 1;
         // cloud_min_x, cloud_max_x, cloud_min_y, cloud_max_y
@@ -90,7 +93,7 @@ namespace ProjectMap
         bool loop_closure_being_processed_ = false;
 
         ros::NodeHandle node_handle_;
-        ros::Publisher pub_grid_map_;
+        ros::Publisher grid_map_publisher_;
         ros::Subscriber all_kfs_pts_subscriber_;
         ros::Subscriber single_kf_pts_subscriber_;
         nav_msgs::OccupancyGrid grid_map_msg_;
