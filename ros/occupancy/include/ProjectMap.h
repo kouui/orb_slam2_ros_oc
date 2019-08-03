@@ -92,6 +92,6 @@ namespace ProjectMap
         ros::Publisher pub_grid_map_;
         nav_msgs::OccupancyGrid grid_map_msg_;
 
-    }
+    };
 }
 #endif
