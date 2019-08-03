@@ -74,13 +74,14 @@ generate_messages(
 
 catkin_package (
   CATKIN_DEPENDS roscpp rospy std_msgs cv_bridge image_transport tf sensor_msgs dynamic_reconfigure message_runtime
-  LIBRARIES {PROJECT_NAME} libDBoW2 libg2o
+  LIBRARIES {PROJECT_NAME} {PROJECT_NAME}_occupancy libDBoW2 libg2o
 )
 
 include_directories(
 ${PROJECT_SOURCE_DIR}/orb_slam2
 ${PROJECT_SOURCE_DIR}/orb_slam2/include
 ${PROJECT_SOURCE_DIR}/ros/include
+${PROJECT_SOURCE_DIR}/ros/occupancy/include
 ${EIGEN3_INCLUDE_DIR}
 ${catkin_INCLUDE_DIRS}
 )
@@ -90,6 +91,7 @@ include(${PROJECT_SOURCE_DIR}/orb_slam2/Thirdparty/g2o/CMakeLists.txt)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/orb_slam2/lib)
 
+# ORB_SLAM
 add_library(${PROJECT_NAME} SHARED
 ros/src/ProjectMap.cc
 orb_slam2/src/System.cc
@@ -114,6 +116,17 @@ add_dependencies (${PROJECT_NAME} g2o DBoW2)
 
 target_link_libraries(${PROJECT_NAME}
 ${LIBS_ORBSLAM}
+)
+
+# occupancy
+add_library(${PROJECT_NAME}_occupancy SHARED
+ros/occupancy/src/ProjectMap.cc
+)
+add_dependencies (${PROJECT_NAME}_occupancy ${PROJECT_NAME})
+
+target_link_libraries(${PROJECT_NAME}_occupancy
+${LIBS_ORBSLAM}
+${PROJECT_NAME}
 )
 
 # map serialization addition - library boost serialization
