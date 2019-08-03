@@ -125,7 +125,17 @@ if (NOT BOOST_SERIALIZATION)
     message(FATAL_ERROR "Can't find libboost_serialization")
 endif()
 target_link_libraries(${PROJECT_NAME} ${BOOST_SERIALIZATION})
+#-------------------------------------------------------------
+# ros node GridMap
+add_executable (${PROJECT_NAME}_gridmap
+ros/occupancy/src/ProjectMap_map.cc
+)
 
+target_link_libraries(${PROJECT_NAME}_gridmap
+${LIBS_ROS}
+)
+
+#-------------------------------------------------------------
 add_executable (${PROJECT_NAME}_mono
 ros/src/MonoNode.cc
 ros/src/Node.cc
@@ -135,6 +145,7 @@ add_dependencies (${PROJECT_NAME}_mono ${PROJECT_NAME} ${PROJECT_NAME}_gencfg)
 target_link_libraries(${PROJECT_NAME}_mono
 ${LIBS_ROS}
 )
+
 
 add_executable (${PROJECT_NAME}_stereo
 ros/src/StereoNode.cc
