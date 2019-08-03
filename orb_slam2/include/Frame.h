@@ -99,6 +99,9 @@ public:
     cv::Mat UnprojectStereo(const int &i);
 
 public:
+
+    bool is_keyframe;
+
     // Vocabulary used for relocalization.
     ORBVocabulary* mpORBvocabulary;
 
