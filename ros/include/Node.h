@@ -89,7 +89,7 @@ class Node
     bool publish_pointcloud_param_;
     bool publish_pose_param_;
     int min_observations_per_point_;
-    bool publish_projected_map_;
+    bool publish_projected_map_param_;
 };
 
 #endif //ORBSLAM2_ROS_NODE_H_

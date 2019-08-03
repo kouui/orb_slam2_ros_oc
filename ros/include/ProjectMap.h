@@ -49,12 +49,12 @@ namespace ProjectMap
         std::string name_of_node_;
 
         bool pub_all_pts_ = false;
-        usigned int all_pts_pub_gap_ = 0;
-        usigned int pub_count_ = 0;
+        unsigned int all_pts_pub_gap_ = 0;
+        unsigned int pub_count_ = 0;
 
         cv::Mat orb2ros = (cv::Mat_<int>(3,3) << 0,0,1,-1,0,0,0,-1,0);
     }
-}
+};
 
 
 

@@ -17,7 +17,7 @@ namespace ProjectMap
         single_kf_pts_publisher_ = node_handle_.advertise<geometry_msgs::PoseArray> (name_of_node_+"/single_kf_pts", 1);
     }
 
-    Pub::GetAndPublishMsgs ()
+    void Pub::GetAndPublishMsgs ()
     {
         if ( (all_pts_pub_gap_ > 0) && (pub_count_ >= all_pts_pub_gap_) )
         {
@@ -41,7 +41,7 @@ namespace ProjectMap
         }
     }
 
-    geometry_msgs::PoseArray Pub GetAllKfsPts ()
+    geometry_msgs::PoseArray Pub::GetAllKfsPts ()
     {
         // camera_pose, n_pts_in_this_kf, pts, ...
         geometry_msgs::PoseArray kfs_pts_array_;
@@ -93,7 +93,7 @@ namespace ProjectMap
         return kfs_pts_array_;
     }
 
-    geometry_msgs::PoseArray Pub GetSingleKfPts ()
+    geometry_msgs::PoseArray Pub::GetSingleKfPts ()
     {
         ORB_SLAM2::KeyFrame* kf_ = slam_ptr_->getTracker()->mCurrentFrame.mpReferenceKF;
 
@@ -125,9 +125,9 @@ namespace ProjectMap
     {
         geometry_msgs::Pose pose_;
 
-        pose_.position.x = translation.at<float>(2);
-        pose_.position.y = (-1) * translation.at<float>(0);
-        pose_.position.z = (-1) * translation.at<float>(1);
+        pose_.position.x =        translation_.at<float>(2);
+        pose_.position.y = (-1) * translation_.at<float>(0);
+        pose_.position.z = (-1) * translation_.at<float>(1);
 
         return pose_;
     }
@@ -139,9 +139,9 @@ namespace ProjectMap
 
         geometry_msgs::Pose pose_;
 
-        pose_.position.x = translation.at<float>(2);
-        pose_.position.y = (-1) * translation.at<float>(0);
-        pose_.position.z = (-1) * translation.at<float>(1);
+        pose_.position.x =        translation_.at<float>(2);
+        pose_.position.y = (-1) * translation_.at<float>(0);
+        pose_.position.z = (-1) * translation_.at<float>(1);
         pose_.orientation.x = q_[0];
 		pose_.orientation.y = q_[1];
 		pose_.orientation.z = q_[2];
