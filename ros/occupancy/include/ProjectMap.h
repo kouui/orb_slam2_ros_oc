@@ -8,6 +8,8 @@
 // standard
 #include <vector>
 #include <string>
+#include <utility>
+#include <iostream>
 
 // ROS
 #include <ros/ros.h>
@@ -67,13 +69,13 @@ namespace ProjectMap
 
         void SetParameter ();
         void CreateCvMat (const unsigned int h, const unsigned int w);
-        void SingleCallback (const geometry_msgs::PoseArray &msg);
-        void AllCallback (const geometry_msgs::PoseArray &msg);
+        void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
+        void AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
 
         float scale_fac_ = 3;
         float resize_fac_ = 1;
         // cloud_min_x, cloud_max_x, cloud_min_y, cloud_max_y
-        float cloud_lim_[4] =  {-10, 10, -5, 16};
+        float cloud_lim_[4] =  {-5, 16, -10, 10};
         float free_thresh_ = 0.60;
         float occupied_thresh_ = 0.40;
         unsigned int visit_thresh_ = 0;
@@ -84,7 +86,10 @@ namespace ProjectMap
         cv::Mat global_occupied_counter_, global_visit_counter_;
         cv::Mat local_occupied_counter_, local_visit_counter_;
         cv::Mat local_map_pt_mask_;
-        cv::Mat grid_map_, grid_map_int_, grid_map_thresh_, grid_map_thresh_resized_;
+        cv::Mat grid_map_;                 // [0.0, 1.0], to compute free/occupied probability
+        cv::Mat grid_map_int_;             // [0, 100], free/occupied probability normalized to integer 100
+        cv::Mat grid_map_thresh_;          // for visualization, uint8 : 0, 128, 255 -> black, gray, white
+        //cv::Mat grid_map_thresh_resized_;
         float kf_pos_x_, kf_pos_y_;
         int kf_pos_grid_x_, kf_pos_grid_y_;
 
@@ -93,6 +98,7 @@ namespace ProjectMap
         unsigned int h_, w_;
 
         bool loop_closure_being_processed_ = false;
+        unsigned int n_kf_received_ = 0;
 
         ros::NodeHandle node_handle_;
         ros::Publisher grid_map_publisher_;
