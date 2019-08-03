@@ -49,7 +49,7 @@ namespace ProjectMap
 
         grid_map_.create(h, w, CV_32FC1);
         grid_map_thresh_.create(h, w, CV_8UC1);
-        grid_map_thresh_resized_.create(h * resize_fac_, w * resize_fac_, CV_8UC1);
+        //grid_map_thresh_resized_.create(h * resize_fac_, w * resize_fac_, CV_8UC1);
 
         local_occupied_counter_.create(h, w, CV_32SC1);
         local_visit_counter_.create(h, w, CV_32SC1);
@@ -81,7 +81,7 @@ namespace ProjectMap
         ++n_kf_received_;
 
         unsigned int n_pts = kf_pts_array->poses.size() - 1;
-        ProcessPts(kf_pts_array->poses, n_pts, 1, kf_pos_grid_x_, kf_pos_grid_y_);
+        ProcessPts(kf_pts_array->poses, n_pts, 1);
         GetGridMap();
     }
 
@@ -89,7 +89,7 @@ namespace ProjectMap
     {
         unsigned int end_id = start_id + n_pts;
 
-        if (use_local_counters)
+        if (use_local_counters_)
         {
             local_map_pt_mask_.setTo(0);
             local_occupied_counter_.setTo(0);
@@ -97,9 +97,9 @@ namespace ProjectMap
 
             for (unsigned int pt_id = start_id; pt_id < end_id; ++pt_id)
                 ProcessPt(pts[pt_id].position, local_occupied_counter_, local_visit_counter_, local_map_pt_mask_);
-            for (int row = 0; row < h; ++row)
+            for (int row = 0; row < h_; ++row)
             {
-                for (int col = 0; col < w; ++col)
+                for (int col = 0; col < w_; ++col)
                 {
                     if (local_map_pt_mask_.at<uchar>(row, col) == 0)
                     {
@@ -133,7 +133,7 @@ namespace ProjectMap
         if ( pt_pos_grid_y < 0 || pt_pos_grid_y >= w_ ) return;
 
         ++occupied.at<int>(pt_pos_grid_x, pt_pos_grid_y);
-        pt_mask.at<uchar>(pt_pos_grid_x, pt_pos_grid_y) = 255
+        pt_mask.at<uchar>(pt_pos_grid_x, pt_pos_grid_y) = 255;
 
         int x0 = kf_pos_grid_x_;
         int y0 = kf_pos_grid_y_;
@@ -178,9 +178,9 @@ namespace ProjectMap
 
     void Map::GetGridMap ()
     {
-        for (int row = 0; row < h; ++row)
+        for (int row = 0; row < h_; ++row)
         {
-            for (int col = 0; col < w; ++col)
+            for (int col = 0; col < w_; ++col)
             {
                 int visits    = global_visit_counter_.at<int>(row, col);
                 int occupieds = global_occupied_counter_.at<int>(row, col);
@@ -193,11 +193,11 @@ namespace ProjectMap
                 }
                 else if (grid_map_.at<float>(row, col) < occupied_thresh_)
                 {
-                    grid_map_thresh.at<uchar>(row, col) = 0;
+                    grid_map_thresh_.at<uchar>(row, col) = 0;
                 }
                 else
                 {
-                    grid_map_thresh.at<uchar>(row, col) = 128;
+                    grid_map_thresh_.at<uchar>(row, col) = 128;
                 }
 
                 grid_map_int_.at<char>(row, col) = (1 - grid_map_.at<float>(row, col)) * 100;
@@ -216,7 +216,7 @@ namespace ProjectMap
         loop_closure_being_processed_ = false;
     }
 
-    void Map::resetGridMap(const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array)
+    void Map::ResetGridMap(const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array)
     {
         global_visit_counter_.setTo(0);
         global_occupied_counter_.setTo(0);
