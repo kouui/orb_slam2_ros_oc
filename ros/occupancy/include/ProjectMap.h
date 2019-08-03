@@ -71,6 +71,11 @@ namespace ProjectMap
         void CreateCvMat (const unsigned int h, const unsigned int w);
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
         void AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
+        void UpdateGridMap (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
+        void ProcessPts (const std::vector<geometry_msgs::Pose> &pts, unsigned int n_pts, unsigned int start_id);
+        void ProcessPt (const geometry_msgs::Point &curr_pt, cv::Mat &occupied, cv::Mat &visited, cv::Mat &pt_mask);
+        void GetGridMap ();
+        void resetGridMap(const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
 
         float scale_fac_ = 3;
         float resize_fac_ = 1;
