@@ -80,15 +80,15 @@ namespace ProjectMap
 
                 ++n_pts_;
             }
-            kfs_pts_array_.poses[n_pts_id_].x = n_pts_;
-            kfs_pts_array_.poses[n_pts_id_].y = n_pts_;
-            kfs_pts_array_.poses[n_pts_id_].z = n_pts_;
+            kfs_pts_array_.poses[n_pts_id_].position.x = n_pts_;
+            kfs_pts_array_.poses[n_pts_id_].position.y = n_pts_;
+            kfs_pts_array_.poses[n_pts_id_].position.z = n_pts_;
 
             ++n_kf_;
         }
-        kfs_pts_array_.poses[0].x = n_kf_;
-        kfs_pts_array_.poses[0].y = n_kf_;
-        kfs_pts_array_.poses[0].z = n_kf_;
+        kfs_pts_array_.poses[0].position.x = n_kf_;
+        kfs_pts_array_.poses[0].position.y = n_kf_;
+        kfs_pts_array_.poses[0].position.z = n_kf_;
 
         return kfs_pts_array_;
     }
@@ -96,8 +96,6 @@ namespace ProjectMap
     geometry_msgs::PoseArray Pub::GetSingleKfPts ()
     {
         ORB_SLAM2::KeyFrame* kf_ = slam_ptr_->getTracker()->mCurrentFrame.mpReferenceKF;
-
-        if ( kf_->isBad() ) continue;
 
         // camera_pose, pts, ...
         geometry_msgs::PoseArray kf_pts_array_;
@@ -109,7 +107,7 @@ namespace ProjectMap
         kf_pts_array_.poses.push_back( TransformFromCamera_orb2ros(T_, R_) );
 
         std::vector<ORB_SLAM2::MapPoint*> map_pts_ = slam_ptr_->GetTrackedMapPoints();
-        for (pt_ : map_pts_)
+        for (auto pt_ : map_pts_)
         {
             if ( !pt_ || pt_->isBad() ) continue;
 

@@ -53,9 +53,6 @@ namespace ProjectMap
         unsigned int pub_count_ = 0;
 
         cv::Mat orb2ros = (cv::Mat_<int>(3,3) << 0,0,1,-1,0,0,0,-1,0);
-    }
-};
-
-
-
+    };
+}
 #endif
