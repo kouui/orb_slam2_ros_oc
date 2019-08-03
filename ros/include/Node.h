@@ -54,6 +54,7 @@ class Node
   protected:
     void Update ();
     ORB_SLAM2::System* orb_slam_;
+    ProjectMap::Pub* array_pub_ptr_;
 
     ros::Time current_frame_time_;
 
@@ -88,6 +89,7 @@ class Node
     bool publish_pointcloud_param_;
     bool publish_pose_param_;
     int min_observations_per_point_;
+    bool publish_projected_map_;
 };
 
 #endif //ORBSLAM2_ROS_NODE_H_

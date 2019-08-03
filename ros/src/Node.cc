@@ -1,4 +1,5 @@
 #include "Node.h"
+#include "ProjectMap.h"
 
 #include <iostream>
 
@@ -16,6 +17,7 @@ Node::Node (ORB_SLAM2::System::eSensor sensor, ros::NodeHandle &node_handle, ima
   node_handle_.param<std::string>(name_of_node_ + "/voc_file", voc_file_name_param_, "file_not_set");
   node_handle_.param<std::string>(name_of_node_ + "/settings_file", settings_file_name_param_, "file_not_set");
   node_handle_.param(name_of_node_ + "/load_map", load_map_param_, false);
+  node_handle_.param(name_of_node_ + "/publish_projected_map", publish_projected_map_param_, false);
 
   orb_slam_ = new ORB_SLAM2::System (voc_file_name_param_, settings_file_name_param_, sensor, map_file_name_param_, load_map_param_);
 
@@ -36,6 +38,10 @@ Node::Node (ORB_SLAM2::System::eSensor sensor, ros::NodeHandle &node_handle, ima
     pose_publisher_ = node_handle_.advertise<geometry_msgs::PoseStamped> (name_of_node_+"/pose", 1);
   }
 
+  if (publish_projected_map_param_) {
+      array_pub_ptr_ = new ProjectMap::Pub (orb_slam_, node_handle_ );
+  }
+
 }
 
 
@@ -47,6 +53,7 @@ Node::~Node () {
   orb_slam_->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 
   delete orb_slam_;
+  delete array_pub_ptr_;
 }
 
 
@@ -65,6 +72,10 @@ void Node::Update () {
 
   if (publish_pointcloud_param_) {
     PublishMapPoints (orb_slam_->GetAllMapPoints());
+  }
+
+  if (publish_projected_map_param_) {
+      array_pub_ptr_->GetAndPublishMsgs ()
   }
 
 }
