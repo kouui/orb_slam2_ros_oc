@@ -11,6 +11,7 @@ namespace ProjectMap
         //static parameters
         node_handle_.param<std::string>("/all_kfs_pts_topic", all_kfs_pts_topic_param_, "/orb_slam2_mono/all_kfs_pts");
         node_handle_.param<std::string>("/single_kf_pts_topic", single_kf_pts_topic_param_, "/orb_slam2_mono/single_kf_pts");
+        node_handle_.param<std::string>("/frame_id", frame_id_param_, "/map");
 
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
@@ -44,6 +45,7 @@ namespace ProjectMap
         grid_map_msg_.data.resize(h*w);
         grid_map_msg_.info.width = w;
         grid_map_msg_.info.height = h;
+        grid_map_msg_.header.frame_id = frame_id_param_;
         grid_map_msg_.info.resolution = 1.0/scale_fac_;
         grid_map_int_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_msg_.data.data()));
 
