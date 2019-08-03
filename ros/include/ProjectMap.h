@@ -41,7 +41,7 @@ namespace ProjectMap
         geometry_msgs::PoseArray GetAllKfsPts ();
         geometry_msgs::PoseArray GetSingleKfPts ();
         geometry_msgs::Pose TransformFromMapPt_orb2ros (const cv::Mat translation_);
-        geometry_msgs::Pose TransformFromCaerma_orb2ros (const cv::Mat translation_, cv::Mat rotation_);
+        geometry_msgs::Pose TransformFromCamera_orb2ros (const cv::Mat translation_, cv::Mat rotation_);
 
         ros::NodeHandle node_handle_;
         ros::Publisher all_kfs_pts_publisher_;
