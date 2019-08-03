@@ -35,9 +35,9 @@ namespace ProjectMap
 
     protected:
         ORB_SLAM2::System* slam_ptr_;
+        void GetAndPublishMsgs ();
 
     private:
-        void GetAndPublishMsgs ();
         geometry_msgs::PoseArray GetAllKfsPts ();
         geometry_msgs::PoseArray GetSingleKfPts ();
         geometry_msgs::Pose TransformFromMapPt_orb2ros (const cv::Mat translation_);

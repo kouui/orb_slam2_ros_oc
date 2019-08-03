@@ -74,7 +74,7 @@ void Node::Update () {
   }
 
   if (publish_projected_map_param_) {
-      array_pub_ptr_->GetAndPublishMsgs ()
+      array_pub_ptr_->GetAndPublishMsgs ();
   }
 
 }
