@@ -68,7 +68,7 @@ namespace ProjectMap
         void SetParameter ();
         void CreateCvMat (const unsigned int h, const unsigned int w);
         void SingleCallback (const geometry_msgs::PoseArray &msg);
-        void AllCallback (const geometry_msgs::PoseArray &msg)
+        void AllCallback (const geometry_msgs::PoseArray &msg);
 
         float scale_fac_ = 3;
         float resize_fac_ = 1;
