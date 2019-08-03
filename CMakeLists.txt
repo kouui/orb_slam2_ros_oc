@@ -140,7 +140,7 @@ add_executable (${PROJECT_NAME}_mono
 ros/src/MonoNode.cc
 ros/src/Node.cc
 )
-add_dependencies (${PROJECT_NAME}_mono ${PROJECT_NAME} ${PROJECT_NAME}_gencfg)
+add_dependencies (${PROJECT_NAME}_mono ${PROJECT_NAME} ${PROJECT_NAME}_occupancy ${PROJECT_NAME}_gencfg)
 
 target_link_libraries(${PROJECT_NAME}_mono
 ${LIBS_ROS}
