@@ -89,7 +89,7 @@ namespace ProjectMap
     {
         unsigned int end_id = start_id + n_pts;
 
-        if (use_local_counters_)
+        if (use_local_counter_)
         {
             local_map_pt_mask_.setTo(0);
             local_occupied_counter_.setTo(0);
