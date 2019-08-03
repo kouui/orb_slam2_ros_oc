@@ -41,6 +41,8 @@ namespace ProjectMap
         }
     }
 
+    Pub::~Pub () { }
+
     geometry_msgs::PoseArray Pub::GetAllKfsPts ()
     {
         // camera_pose, n_pts_in_this_kf, pts, ...
