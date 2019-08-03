@@ -60,12 +60,12 @@ namespace ProjectMap
     class Map
     {
     public:
-        Map ();
+        Map (ros::NodeHandle &node_handle);
         ~Map () { };
 
     private:
 
-        float scale_fac_ = 1;
+        float scale_fac_ = 3;
         float resize_fac_ = 1;
         // cloud_min_x, cloud_max_x, cloud_min_y, cloud_max_y
         float cloud_lim_[4] =  {-10, 10, -5, 16};
@@ -85,12 +85,20 @@ namespace ProjectMap
 
         // x, y
         float norm_fac_[2];
-        unsigned int h, w;
+        unsigned int h_, w_;
 
         bool loop_closure_being_processed_ = false;
 
+        ros::NodeHandle node_handle_;
         ros::Publisher pub_grid_map_;
+        ros::Subscriber all_kfs_pts_subscriber_;
+        ros::Subscriber single_kf_pts_subscriber_;
         nav_msgs::OccupancyGrid grid_map_msg_;
+        std::string name_of_node_;
+
+        std::string all_kfs_pts_topic_param_;
+        std::string single_kf_pts_topic_param_;
+
 
     };
 }
