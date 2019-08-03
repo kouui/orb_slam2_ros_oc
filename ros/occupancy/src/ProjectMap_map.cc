@@ -13,8 +13,8 @@ namespace ProjectMap
         node_handle_.param<std::string>("/single_kf_pts_topic", single_kf_pts_topic_param_, "/orb_slam2_mono/single_kf_pts");
 
         // subscriber
-        single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, SingleCallback);
-        all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, AllCallback);
+        //single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, SingleCallback);
+        //all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, AllCallback);
         // publisher
         grid_map_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map", 1);
 
@@ -22,7 +22,7 @@ namespace ProjectMap
         CreateCvMat (h_, w_);
     }
 
-    void SetParameter ()
+    void Map::SetParameter ()
     {
         for (auto i=0; i<4; i++)
             grid_lim_[i] = cloud_lim_[i] * scale_fac_;
@@ -34,7 +34,7 @@ namespace ProjectMap
         norm_fac_[1] = float(w - 1) / float(w);
     }
 
-    void CreateCvMat (const unsigned int h, const unsigned int w)
+    void Map::CreateCvMat (const unsigned int h, const unsigned int w)
     {
         global_occupied_counter_.create(h, w, CV_32SC1);
         global_visit_counter_.create(h, w, CV_32SC1);
