@@ -346,7 +346,7 @@ namespace ProjectMap
     	}
     }
 
-    void Map::SetGridOrigin (geometry_msgs::OccupancyGrid &grid, float &grid_min_x, float &grid_min_y)
+    void Map::SetGridOrigin (nav_msgs::OccupancyGrid &grid, float &grid_min_x, float &grid_min_y)
     {
         grid.origin.orientation.x = 1;
         grid.origin.orientation.y = 0;
