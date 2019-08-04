@@ -80,12 +80,12 @@ namespace ProjectMap
         void GetGridMap ();
         void ResetGridMap(const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
 
-        float scale_fac_ = 3;
-        float resize_fac_ = 1;
+        float scale_fac_;
+        //float resize_fac_ = 1; // removed
         // cloud_min_x, cloud_max_x, cloud_min_y, cloud_max_y
         float cloud_lim_[4] =  {-5, 16, -10, 10};
-        float free_thresh_ = 0.60;
-        float occupied_thresh_ = 0.40;
+        float free_thresh_;
+        float occupied_thresh_;
         unsigned int visit_thresh_ = 0;
         bool use_local_counter_ = false;
         float thresh_diff_ = 0.01;

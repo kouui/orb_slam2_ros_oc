@@ -11,6 +11,9 @@
        <param name="publish_grid_map_visual" type="bool" value="true" />
        <param name="publish_grid_map_cost" type="bool" value="true" />
        <param name="use_keyboardUI" type="bool" value="false" />
+       <param name="free_thresh" type="float" value="0.6" />
+       <param name="occupied_thresh" type="float" value="0.4" />
+       <param name="scale_factor" type="float" value="3" />
   </node>
 
 </launch>

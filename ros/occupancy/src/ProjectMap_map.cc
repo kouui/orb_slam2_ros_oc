@@ -15,6 +15,9 @@ namespace ProjectMap
         node_handle_.param(name_of_node_+"/publish_grid_map_visual", publish_grid_map_visual_param_, true);
         node_handle_.param(name_of_node_+"/publish_grid_map_cost", publish_grid_map_cost_param_, true);
         node_handle_.param(name_of_node_+"/use_keyboardUI", use_keyboardUI_param_, false);
+        node_handle_.param(name_of_node_+"/free_thresh", free_thresh_, 0.6);
+        node_handle_.param(name_of_node_+"/occupied_thresh", occupied_thresh_, 0.4);
+        node_handle_.param(name_of_node_+"/scale_factor", scale_fac_, 3);
 
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
