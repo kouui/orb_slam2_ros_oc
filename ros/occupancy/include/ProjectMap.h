@@ -83,10 +83,10 @@ namespace ProjectMap
         float scale_fac_;
         //float resize_fac_ = 1; // removed
         // cloud_min_x, cloud_max_x, cloud_min_y, cloud_max_y
-        float cloud_lim_[4] =  {-5, 16, -10, 10};
+        float cloud_lim_[4];
         float free_thresh_;
         float occupied_thresh_;
-        unsigned int visit_thresh_ = 0;
+        unsigned int visit_thresh_;
         bool use_local_counter_ = false;
         float thresh_diff_ = 0.01;
 
@@ -127,6 +127,11 @@ namespace ProjectMap
         double free_thresh_param_;
         double occupied_thresh_param_;
         double scale_factor_param_;
+        double cloud_min_x_param_;
+        double cloud_max_x_param_;
+        double cloud_min_y_param_;
+        double cloud_max_y_param_;
+        int visit_thresh_param_;
 
 
     };

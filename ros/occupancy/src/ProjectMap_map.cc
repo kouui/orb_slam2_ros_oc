@@ -18,10 +18,20 @@ namespace ProjectMap
         node_handle_.param(name_of_node_+"/free_thresh", free_thresh_param_, 0.6);
         node_handle_.param(name_of_node_+"/occupied_thresh", occupied_thresh_param_, 0.4);
         node_handle_.param(name_of_node_+"/scale_factor", scale_factor_param_, 3.0);
+        node_handle_.param(name_of_node_+"/cloud_min_x", cloud_min_x_param_, -5.0);
+        node_handle_.param(name_of_node_+"/cloud_max_x", cloud_max_x_param_, 16.0);
+        node_handle_.param(name_of_node_+"/cloud_min_y", cloud_min_y_param_, -10.0);
+        node_handle_.param(name_of_node_+"/cloud_max_y", cloud_max_y_param_, 10.0);
+        node_handle_.param(name_of_node_+"/visit_thresh", visit_thresh_param_, 0);
 
-        free_thresh_ = (float) free_thresh_param_;
-        occupied_thresh_ = (float) occupied_thresh_param_;
-        scale_fac_ = (float) scale_factor_param_;
+        free_thresh_         = (float) free_thresh_param_;
+        occupied_thresh_     = (float) occupied_thresh_param_;
+        scale_fac_           = (float) scale_factor_param_;
+        cloud_lim_[0]        = (float) cloud_min_x_param_;
+        cloud_lim_[1]        = (float) cloud_max_x_param_;
+        cloud_lim_[2]        = (float) cloud_min_y_param_;
+        cloud_lim_[3]        = (float) cloud_max_y_param_;
+        visit_thresh_        = (unsigned int) visit_thresh_param_;
 
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);

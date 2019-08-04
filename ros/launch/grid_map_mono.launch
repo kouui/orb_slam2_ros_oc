@@ -14,6 +14,11 @@
        <param name="free_thresh" type="double" value="0.6" />
        <param name="occupied_thresh" type="double" value="0.4" />
        <param name="scale_factor" type="double" value="3" />
+       <param name="cloud_min_x" type="double" value="-5" />
+       <param name="cloud_max_x" type="double" value="16" />
+       <param name="cloud_min_y" type="double" value="-10" />
+       <param name="cloud_max_y" type="double" value="10" />
+       <param name="visit_thresh" type="int" value="1" />
   </node>
 
 </launch>
