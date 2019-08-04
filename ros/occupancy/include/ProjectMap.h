@@ -80,6 +80,8 @@ namespace ProjectMap
         void ProcessPt (const geometry_msgs::Point &curr_pt, cv::Mat &occupied, cv::Mat &visited, cv::Mat &pt_mask);
         void GetGridMap ();
         void ResetGridMap(const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
+        void KeyboardUI ();
+        void SetGridOrigin (geometry_msgs::OccupancyGrid &grid, float &grid_min_x, float &grid_min_y);
 
         float scale_fac_;
         //float resize_fac_ = 1; // removed
@@ -133,8 +135,6 @@ namespace ProjectMap
         double cloud_min_y_param_;
         double cloud_max_y_param_;
         int visit_thresh_param_;
-
-
     };
 }
 #endif

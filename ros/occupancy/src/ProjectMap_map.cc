@@ -36,7 +36,7 @@ namespace ProjectMap
         node_handle_.param(name_of_node_+"/use_keyboardUI", use_keyboardUI_param_, false);
         node_handle_.param(name_of_node_+"/free_thresh", free_thresh_param_, 0.6);
         node_handle_.param(name_of_node_+"/occupied_thresh", occupied_thresh_param_, 0.4);
-        node_handle_.param(name_of_node_+"/scale_factor", scale_factor_param_, 3.0);
+        node_handle_.param(name_of_node_+"/scale_factor", scale_factor_param_, 4.0);
         node_handle_.param(name_of_node_+"/cloud_min_x", cloud_min_x_param_, -5.0);
         node_handle_.param(name_of_node_+"/cloud_max_x", cloud_max_x_param_, 16.0);
         node_handle_.param(name_of_node_+"/cloud_min_y", cloud_min_y_param_, -10.0);
@@ -80,6 +80,7 @@ namespace ProjectMap
             grid_map_cost_msg_.info.height = h;
             grid_map_cost_msg_.header.frame_id = frame_id_param_;
             grid_map_cost_msg_.info.resolution = 1.0/scale_fac_;
+            SetGridOrigin (grid_map_cost_msg_, grid_lim_[0], grid_lim_[2]);
             grid_map_int_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_cost_msg_.data.data()));
         }
         if (publish_grid_map_visual_param_)
@@ -89,6 +90,7 @@ namespace ProjectMap
             grid_map_visual_msg_.info.height = h;
             grid_map_visual_msg_.header.frame_id = frame_id_param_;
             grid_map_visual_msg_.info.resolution = 1.0/scale_fac_;
+            SetGridOrigin (grid_map_visual_msg_, grid_lim_[0], grid_lim_[2]);
             grid_map_thresh_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_visual_msg_.data.data()));
         }
 
@@ -342,6 +344,17 @@ namespace ProjectMap
 
             std::cout << "Setting occupied_thresh_ to: " << occupied_thresh_ <<"\n";
     	}
+    }
+
+    void Map::SetGridOrigin (geometry_msgs::OccupancyGrid &grid, float &grid_min_x, float &grid_min_y)
+    {
+        grid.origin.orientation.x = 1;
+        grid.origin.orientation.y = 0;
+        grid.origin.orientation.z = 0;
+        grid.origin.orientation.w = 0;
+        grid.origin.position.x = grid_min_x * grid.info.resolution ;
+        grid.origin.position.y = grid_min_y * grid.info.resolution ;
+        grid.origin.position.z = 0;
     }
 }
 

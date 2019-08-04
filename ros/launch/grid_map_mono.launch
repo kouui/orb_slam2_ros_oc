@@ -13,7 +13,7 @@
        <param name="use_keyboardUI" type="bool" value="false" />
        <param name="free_thresh" type="double" value="0.6" />
        <param name="occupied_thresh" type="double" value="0.4" />
-       <param name="scale_factor" type="double" value="3" />
+       <param name="scale_factor" type="double" value="4" />
        <param name="cloud_min_x" type="double" value="-5" />
        <param name="cloud_max_x" type="double" value="16" />
        <param name="cloud_min_y" type="double" value="-10" />
