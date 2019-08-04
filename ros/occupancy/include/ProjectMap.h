@@ -69,7 +69,8 @@ namespace ProjectMap
 
     private:
 
-        void SetParameter ();
+        void GetROSParameter ();
+        void SetGridParameter ();
         void CreateCvMat (const unsigned int h, const unsigned int w);
         void PublishTopic (const ros::Publisher &pub, nav_msgs::OccupancyGrid &msg);
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);

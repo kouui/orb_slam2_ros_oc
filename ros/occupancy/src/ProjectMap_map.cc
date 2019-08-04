@@ -8,6 +8,25 @@ namespace ProjectMap
         node_handle_ = node_handle;
         name_of_node_ = ros::this_node::getName();
 
+        GetROSParameter ();
+
+        // subscriber
+        single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
+        all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, 1, &Map::AllCallback, this);
+        // publisher
+        if (publish_grid_map_cost_param_)
+        { grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1); }
+        if (publish_grid_map_visual_param_)
+        { grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1); }
+
+        SetGridParameter ();
+        CreateCvMat (h_, w_);
+
+        if (use_keyboardUI_param_) KeyboardUI ();
+    }
+
+    void Map::GetROSParameter ()
+    {
         //static parameters
         node_handle_.param<std::string>(name_of_node_+"/all_kfs_pts_topic", all_kfs_pts_topic_param_, "/orb_slam2_mono/all_kfs_pts");
         node_handle_.param<std::string>(name_of_node_+"/single_kf_pts_topic", single_kf_pts_topic_param_, "/orb_slam2_mono/single_kf_pts");
@@ -32,23 +51,9 @@ namespace ProjectMap
         cloud_lim_[2]        = (float) cloud_min_y_param_;
         cloud_lim_[3]        = (float) cloud_max_y_param_;
         visit_thresh_        = (unsigned int) visit_thresh_param_;
-
-        // subscriber
-        single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
-        all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, 1, &Map::AllCallback, this);
-        // publisher
-        if (publish_grid_map_cost_param_)
-        { grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1); }
-        if (publish_grid_map_visual_param_)
-        { grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1); }
-
-        SetParameter ();
-        CreateCvMat (h_, w_);
-
-        if (use_keyboardUI_param_) KeyboardUI ();
     }
 
-    void Map::SetParameter ()
+    void Map::SetGridParameter ()
     {
         for (auto i=0; i<4; i++)
             grid_lim_[i] = cloud_lim_[i] * scale_fac_;
