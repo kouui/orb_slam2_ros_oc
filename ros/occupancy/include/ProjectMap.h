@@ -124,6 +124,7 @@ namespace ProjectMap
         bool publish_grid_map_cost_param_;
         bool publish_grid_map_visual_param_;
         bool use_keyboardUI_param_;
+        double free_thresh_param_, occupied_thresh_param_, ;
 
 
     };
