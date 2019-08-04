@@ -74,7 +74,7 @@ namespace ProjectMap
         local_map_pt_mask_.create(h, w, CV_8UC1);
     }
 
-    void Map::PublishTopic (const ros::Publisher &pub, nav_msgs::OccupancyGrid &msg)
+    void Map::PublishTopic (const ros::Publisher &pub, nav_msgs::OccupancyGrid &msg_ptr)
     {
         msg.info.map_load_time = ros::Time::now();
         pub.publish( msg );
