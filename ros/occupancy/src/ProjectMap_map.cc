@@ -77,7 +77,7 @@ namespace ProjectMap
         local_map_pt_mask_.create(h, w, CV_8UC1);
     }
 
-    void Map::PublishTopic (const ros::Publisher &pub, nav_msgs::OccupancyGrid &msg_ptr)
+    void Map::PublishTopic (const ros::Publisher &pub, nav_msgs::OccupancyGrid &msg)
     {
         msg.info.map_load_time = ros::Time::now();
         pub.publish( msg );
@@ -288,7 +288,7 @@ namespace ProjectMap
 
     void Map::KeyboardUI ()
     {
-        nt key = cv::waitKey(1) % 256;
+        int key = cv::waitKey(1) % 256;
     	if (key == 'D') { cv::destroyAllWindows(); }
     	else if (key == 'f')
         {
