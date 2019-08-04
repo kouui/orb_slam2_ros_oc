@@ -19,9 +19,9 @@ namespace ProjectMap
         node_handle_.param(name_of_node_+"/occupied_thresh", occupied_thresh_param_, 0.4);
         node_handle_.param(name_of_node_+"/scale_factor", scale_factor_param_, 3);
 
-        free_thresh_ = (float) free_thresh_param_
-        occupied_thresh_ = (float) occupied_thresh_param_
-        scale_factor_ = (float) scale_factor_param_
+        free_thresh_ = (float) free_thresh_param_;
+        occupied_thresh_ = (float) occupied_thresh_param_;
+        scale_factor_ = (float) scale_factor_param_;
 
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
