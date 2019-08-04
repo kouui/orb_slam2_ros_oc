@@ -12,13 +12,17 @@ namespace ProjectMap
         node_handle_.param<std::string>("/all_kfs_pts_topic", all_kfs_pts_topic_param_, "/orb_slam2_mono/all_kfs_pts");
         node_handle_.param<std::string>("/single_kf_pts_topic", single_kf_pts_topic_param_, "/orb_slam2_mono/single_kf_pts");
         node_handle_.param<std::string>("/frame_id", frame_id_param_, "/map");
+        node_handle_.param("/publish_grid_map_visual", publish_grid_map_visual_param_, true);
+        node_handle_.param("/publish_grid_map_cost", publish_grid_map_cost_param_, true);
 
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
         all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, 1, &Map::AllCallback, this);
         // publisher
-        grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1);
-        grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1);
+        if (publish_grid_map_cost_param_)
+            grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1);
+        if (publish_grid_map_visual_param_)
+            grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1);
 
         SetParameter ();
         CreateCvMat (h_, w_);
@@ -44,20 +48,24 @@ namespace ProjectMap
         global_visit_counter_.setTo(cv::Scalar(0));
 
         grid_map_.create(h, w, CV_32FC1);
-
-        grid_map_cost_msg_.data.resize(h*w);
-        grid_map_cost_msg_.info.width = w;
-        grid_map_cost_msg_.info.height = h;
-        grid_map_cost_msg_.header.frame_id = frame_id_param_;
-        grid_map_cost_msg_.info.resolution = 1.0/scale_fac_;
-        grid_map_int_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_cost_msg_.data.data()));
-
-        grid_map_visual_msg_.data.resize(h*w);
-        grid_map_visual_msg_.info.width = w;
-        grid_map_visual_msg_.info.height = h;
-        grid_map_visual_msg_.header.frame_id = frame_id_param_;
-        grid_map_visual_msg_.info.resolution = 1.0/scale_fac_;
-        grid_map_thresh_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_visual_msg_.data.data()));
+        if (publish_grid_map_cost_param_)
+        {
+            grid_map_cost_msg_.data.resize(h*w);
+            grid_map_cost_msg_.info.width = w;
+            grid_map_cost_msg_.info.height = h;
+            grid_map_cost_msg_.header.frame_id = frame_id_param_;
+            grid_map_cost_msg_.info.resolution = 1.0/scale_fac_;
+            grid_map_int_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_cost_msg_.data.data()));
+        }
+        if (publish_grid_map_visual_param_)
+        {
+            grid_map_visual_msg_.data.resize(h*w);
+            grid_map_visual_msg_.info.width = w;
+            grid_map_visual_msg_.info.height = h;
+            grid_map_visual_msg_.header.frame_id = frame_id_param_;
+            grid_map_visual_msg_.info.resolution = 1.0/scale_fac_;
+            grid_map_thresh_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_visual_msg_.data.data()));
+        }
 
         //grid_map_thresh_resized_.create(h * resize_fac_, w * resize_fac_, CV_8UC1);
 
@@ -81,8 +89,10 @@ namespace ProjectMap
         //std::cout << "Received " << n_kf_received_ << " frames.\n"
         //grid_map_msg_.info.map_load_time = ros::Time::now();
         //grid_map_publisher_.publish( grid_map_msg_ );
-        PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_);
-        PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_);
+        if (publish_grid_map_visual_param_)
+            PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_);
+        if (publish_grid_map_cost_param_)
+            PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_);
     }
 
     void Map::UpdateGridMap (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array)
@@ -204,21 +214,23 @@ namespace ProjectMap
                 int occupieds = global_occupied_counter_.at<int>(row, col);
 
                 grid_map_.at<float>(row, col) = (visits <= visit_thresh_) ? 0.5 :  (1.0 - float(occupieds / visits));
-
-                if (grid_map_.at<float>(row, col) >= free_thresh_)
+                if (publish_grid_map_visual_param_)
                 {
-                    grid_map_thresh_.at<uchar>(row, col) = 255;
+                    if (grid_map_.at<float>(row, col) >= free_thresh_)
+                    {
+                        grid_map_thresh_.at<uchar>(row, col) = 255;
+                    }
+                    else if (grid_map_.at<float>(row, col) < occupied_thresh_)
+                    {
+                        grid_map_thresh_.at<uchar>(row, col) = 0;
+                    }
+                    else
+                    {
+                        grid_map_thresh_.at<uchar>(row, col) = 128;
+                    }
                 }
-                else if (grid_map_.at<float>(row, col) < occupied_thresh_)
-                {
-                    grid_map_thresh_.at<uchar>(row, col) = 0;
-                }
-                else
-                {
-                    grid_map_thresh_.at<uchar>(row, col) = 128;
-                }
-
-                grid_map_int_.at<char>(row, col) = (1 - grid_map_.at<float>(row, col)) * 100;
+                if (publish_grid_map_cost_param_)
+                    grid_map_int_.at<char>(row, col) = (1 - grid_map_.at<float>(row, col)) * 100;
 
             }
         }
@@ -230,8 +242,10 @@ namespace ProjectMap
         loop_closure_being_processed_ = true;
         ResetGridMap( kfs_pts_array );
 
-        PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_);
-        PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_);
+        if (publish_grid_map_visual_param_)
+            PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_);
+        if (publish_grid_map_cost_param_)
+            PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_);
 
         loop_closure_being_processed_ = false;
     }

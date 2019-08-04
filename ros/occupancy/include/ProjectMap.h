@@ -118,6 +118,8 @@ namespace ProjectMap
         std::string all_kfs_pts_topic_param_;
         std::string single_kf_pts_topic_param_;
         std::string frame_id_param_;
+        bool publish_grid_map_cost_param_;
+        bool publish_grid_map_visual_param_;
 
 
     };
