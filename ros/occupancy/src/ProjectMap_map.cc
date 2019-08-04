@@ -68,7 +68,7 @@ namespace ProjectMap
 
     void Map::PublishTopic (const ros::Publisher &pub, const nav_msgs::OccupancyGrid &msg)
     {
-        pub.info.map_load_time = ros::Time::now();
+        msg.info.map_load_time = ros::Time::now();
         pub.publish( msg );
     }
 
