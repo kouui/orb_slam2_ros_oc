@@ -1,0 +1,16 @@
+<launch>
+
+  <node name="GridMap" pkg="orb_slam2_ros"
+      type="orb_slam2_ros_gridmap" output="screen">
+       <!--<remap from="/camera/image_raw" to="/mynteye/left_rect/image_rect" />-->
+
+       <!-- static parameters -->
+       <param name="all_kfs_pts_topic" type="string" value="/orb_slam2_mono/all_kfs_pts" />
+       <param name="single_kf_pts_topic" type="string" value="/orb_slam2_mono/single_kf_pts" />
+       <param name="frame_id" type="string" value="/map" />
+       <param name="publish_grid_map_visual" type="bool" value="true" />
+       <param name="publish_grid_map_cost" type="bool" value="true" />
+       <param name="use_keyboardUI" type="bool" value="false" />
+  </node>
+
+</launch>
