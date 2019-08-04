@@ -14,7 +14,7 @@ namespace ProjectMap
         node_handle_.param<std::string>(name_of_node_+"/frame_id", frame_id_param_, "/map");
         node_handle_.param(name_of_node_+"/publish_grid_map_visual", publish_grid_map_visual_param_, true);
         node_handle_.param(name_of_node_+"/publish_grid_map_cost", publish_grid_map_cost_param_, true);
-        node_handle_.param(name_of_node_+"/use_keyboardUI", use_keyboardUI_param_, true);
+        node_handle_.param(name_of_node_+"/use_keyboardUI", use_keyboardUI_param_, false);
 
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
@@ -286,7 +286,7 @@ namespace ProjectMap
         std::cout << "Completed resetting grid map.\n";
     }
 
-    void Map::KeyboardUI ()
+    void Map::KeyboardUI () // not working; because it needs cv::imshow to open another thread
     {
         int key = cv::waitKey(1) % 256;
     	if (key == 'D') { cv::destroyAllWindows(); }
