@@ -106,10 +106,12 @@ namespace ProjectMap
         unsigned int n_kf_received_ = 0;
 
         ros::NodeHandle node_handle_;
-        ros::Publisher grid_map_publisher_;
+        ros::Publisher grid_map_cost_publisher_;
+        ros::Publisher grid_map_visual_publisher_;
         ros::Subscriber all_kfs_pts_subscriber_;
         ros::Subscriber single_kf_pts_subscriber_;
-        nav_msgs::OccupancyGrid grid_map_msg_;
+        nav_msgs::OccupancyGrid grid_map_cost_msg_;
+        nav_msgs::OccupancyGrid grid_map_visual_msg_;
         std::string name_of_node_;
 
         std::string all_kfs_pts_topic_param_;

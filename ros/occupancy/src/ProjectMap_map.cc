@@ -17,7 +17,8 @@ namespace ProjectMap
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
         all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, 1, &Map::AllCallback, this);
         // publisher
-        grid_map_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map", 1);
+        grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1);
+        grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1);
 
         SetParameter ();
         CreateCvMat (h_, w_);
@@ -42,20 +43,33 @@ namespace ProjectMap
         global_occupied_counter_.setTo(cv::Scalar(0));
         global_visit_counter_.setTo(cv::Scalar(0));
 
-        grid_map_msg_.data.resize(h*w);
-        grid_map_msg_.info.width = w;
-        grid_map_msg_.info.height = h;
-        grid_map_msg_.header.frame_id = frame_id_param_;
-        grid_map_msg_.info.resolution = 1.0/scale_fac_;
-        grid_map_int_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_msg_.data.data()));
-
         grid_map_.create(h, w, CV_32FC1);
-        grid_map_thresh_.create(h, w, CV_8UC1);
+
+        grid_map_cost_msg_.data.resize(h*w);
+        grid_map_cost_msg_.info.width = w;
+        grid_map_cost_msg_.info.height = h;
+        grid_map_cost_msg_.header.frame_id = frame_id_param_;
+        grid_map_cost_msg_.info.resolution = 1.0/scale_fac_;
+        grid_map_int_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_cost_msg_.data.data()));
+
+        grid_map_visual_msg_.data.resize(h*w);
+        grid_map_visual_msg_.info.width = w;
+        grid_map_visual_msg_.info.height = h;
+        grid_map_visual_msg_.header.frame_id = frame_id_param_;
+        grid_map_visual_msg_.info.resolution = 1.0/scale_fac_;
+        grid_map_thresh_ = cv::Mat(h, w, CV_8SC1, (char*)(grid_map_visual_msg_.data.data()));
+
         //grid_map_thresh_resized_.create(h * resize_fac_, w * resize_fac_, CV_8UC1);
 
         local_occupied_counter_.create(h, w, CV_32SC1);
         local_visit_counter_.create(h, w, CV_32SC1);
         local_map_pt_mask_.create(h, w, CV_8UC1);
+    }
+
+    void Map::PublishTopic (const ros::Publisher &pub, const nav_msgs::OccupancyGrid &msg)
+    {
+        pub.info.map_load_time = ros::Time::now();
+        pub.publish( msg );
     }
 
     void Map::SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array)
@@ -65,8 +79,10 @@ namespace ProjectMap
 
         UpdateGridMap( kf_pts_array );
         //std::cout << "Received " << n_kf_received_ << " frames.\n"
-        grid_map_msg_.info.map_load_time = ros::Time::now();
-        grid_map_publisher_.publish( grid_map_msg_ );
+        //grid_map_msg_.info.map_load_time = ros::Time::now();
+        //grid_map_publisher_.publish( grid_map_msg_ );
+        PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_);
+        PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_);
     }
 
     void Map::UpdateGridMap (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array)
@@ -213,8 +229,10 @@ namespace ProjectMap
     {
         loop_closure_being_processed_ = true;
         ResetGridMap( kfs_pts_array );
-        grid_map_msg_.info.map_load_time = ros::Time::now();
-        grid_map_publisher_.publish( grid_map_msg_ );
+
+        PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_);
+        PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_);
+
         loop_closure_being_processed_ = false;
     }
 
