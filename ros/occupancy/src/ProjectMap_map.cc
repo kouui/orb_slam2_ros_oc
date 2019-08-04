@@ -9,23 +9,26 @@ namespace ProjectMap
         name_of_node_ = ros::this_node::getName();
 
         //static parameters
-        node_handle_.param<std::string>("/all_kfs_pts_topic", all_kfs_pts_topic_param_, "/orb_slam2_mono/all_kfs_pts");
-        node_handle_.param<std::string>("/single_kf_pts_topic", single_kf_pts_topic_param_, "/orb_slam2_mono/single_kf_pts");
-        node_handle_.param<std::string>("/frame_id", frame_id_param_, "/map");
-        node_handle_.param("/publish_grid_map_visual", publish_grid_map_visual_param_, true);
-        node_handle_.param("/publish_grid_map_cost", publish_grid_map_cost_param_, true);
+        node_handle_.param<std::string>(name_of_node_+"/all_kfs_pts_topic", all_kfs_pts_topic_param_, "/orb_slam2_mono/all_kfs_pts");
+        node_handle_.param<std::string>(name_of_node_+"/single_kf_pts_topic", single_kf_pts_topic_param_, "/orb_slam2_mono/single_kf_pts");
+        node_handle_.param<std::string>(name_of_node_+"/frame_id", frame_id_param_, "/map");
+        node_handle_.param(name_of_node_+"/publish_grid_map_visual", publish_grid_map_visual_param_, true);
+        node_handle_.param(name_of_node_+"/publish_grid_map_cost", publish_grid_map_cost_param_, true);
+        node_handle_.param(name_of_node_+"/use_keyboardUI", use_keyboardUI_param_, true);
 
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
         all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, 1, &Map::AllCallback, this);
         // publisher
         if (publish_grid_map_cost_param_)
-            grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1);
+        { grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1); }
         if (publish_grid_map_visual_param_)
-            grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1);
+        { grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1); }
 
         SetParameter ();
         CreateCvMat (h_, w_);
+
+        if (use_keyboardUI_param_) KeyboardUI ();
     }
 
     void Map::SetParameter ()
@@ -90,9 +93,9 @@ namespace ProjectMap
         //grid_map_msg_.info.map_load_time = ros::Time::now();
         //grid_map_publisher_.publish( grid_map_msg_ );
         if (publish_grid_map_visual_param_)
-            PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_);
+        { PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_); }
         if (publish_grid_map_cost_param_)
-            PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_);
+        { PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_); }
     }
 
     void Map::UpdateGridMap (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array)
@@ -217,20 +220,14 @@ namespace ProjectMap
                 if (publish_grid_map_visual_param_)
                 {
                     if (grid_map_.at<float>(row, col) >= free_thresh_)
-                    {
-                        grid_map_thresh_.at<uchar>(row, col) = 255;
-                    }
+                    { grid_map_thresh_.at<uchar>(row, col) = 255; }
                     else if (grid_map_.at<float>(row, col) < occupied_thresh_)
-                    {
-                        grid_map_thresh_.at<uchar>(row, col) = 0;
-                    }
+                    { grid_map_thresh_.at<uchar>(row, col) = 0; }
                     else
-                    {
-                        grid_map_thresh_.at<uchar>(row, col) = 128;
-                    }
+                    { grid_map_thresh_.at<uchar>(row, col) = 128; }
                 }
                 if (publish_grid_map_cost_param_)
-                    grid_map_int_.at<char>(row, col) = (1 - grid_map_.at<float>(row, col)) * 100;
+                { grid_map_int_.at<char>(row, col) = (1 - grid_map_.at<float>(row, col)) * 100; }
 
             }
         }
@@ -243,14 +240,14 @@ namespace ProjectMap
         ResetGridMap( kfs_pts_array );
 
         if (publish_grid_map_visual_param_)
-            PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_);
+        { PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_); }
         if (publish_grid_map_cost_param_)
-            PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_);
+        { PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_); }
 
         loop_closure_being_processed_ = false;
     }
 
-    void Map::ResetGridMap(const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array)
+    void Map::ResetGridMap (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array)
     {
         global_visit_counter_.setTo(0);
         global_occupied_counter_.setTo(0);
@@ -287,6 +284,42 @@ namespace ProjectMap
         }
         GetGridMap();
         std::cout << "Completed resetting grid map.\n";
+    }
+
+    void Map::KeyboardUI ()
+    {
+        nt key = cv::waitKey(1) % 256;
+    	if (key == 'D') { cv::destroyAllWindows(); }
+    	else if (key == 'f')
+        {
+    		free_thresh_ -= thresh_diff_;
+    		if (free_thresh_ <= occupied_thresh_)
+            { free_thresh_ = occupied_thresh_ + thresh_diff_; }
+
+            std::cout << "Setting free_thresh_ to: " << free_thresh_ <<"\n";
+    	}
+    	else if (key == 'F')
+        {
+    		free_thresh_ += thresh_diff_;
+    		if (free_thresh_ > 1) { free_thresh_ = 1; }
+
+    		std::cout << "Setting free_thresh_ to: " << free_thresh_ <<"\n";
+    	}
+    	else if (key == 'o')
+        {
+    		occupied_thresh_ -= thresh_diff_;
+    		if (free_thresh_ < 0){ free_thresh_ = 0; }
+
+            std::cout << "Setting occupied_thresh_ to: " << occupied_thresh_ <<"\n";
+    	}
+    	else if (key == 'O')
+        {
+    		occupied_thresh_ += thresh_diff_;
+    		if (occupied_thresh_ >= free_thresh_)
+            { occupied_thresh_ = free_thresh_ - thresh_diff_; }
+
+            std::cout << "Setting occupied_thresh_ to: " << occupied_thresh_ <<"\n";
+    	}
     }
 }
 

@@ -65,6 +65,8 @@ namespace ProjectMap
         Map (ros::NodeHandle &node_handle);
         ~Map () { };
 
+        void KeyboardUI ();
+
     private:
 
         void SetParameter ();
@@ -86,6 +88,7 @@ namespace ProjectMap
         float occupied_thresh_ = 0.40;
         unsigned int visit_thresh_ = 0;
         bool use_local_counter_ = false;
+        float thresh_diff_ = 0.01;
 
         // grid_min_x, grid_max_x, grid_min_y, grid_max_y
         float grid_lim_[4];
@@ -120,6 +123,7 @@ namespace ProjectMap
         std::string frame_id_param_;
         bool publish_grid_map_cost_param_;
         bool publish_grid_map_visual_param_;
+        bool use_keyboardUI_param_;
 
 
     };
