@@ -348,13 +348,13 @@ namespace ProjectMap
 
     void Map::SetGridOrigin (nav_msgs::OccupancyGrid &grid, float &grid_min_x, float &grid_min_y)
     {
-        grid.origin.orientation.x = 1;
-        grid.origin.orientation.y = 0;
-        grid.origin.orientation.z = 0;
-        grid.origin.orientation.w = 0;
-        grid.origin.position.x = grid_min_x * grid.info.resolution ;
-        grid.origin.position.y = grid_min_y * grid.info.resolution ;
-        grid.origin.position.z = 0;
+        grid.info.origin.orientation.x = 1;
+        grid.info.origin.orientation.y = 0;
+        grid.info.origin.orientation.z = 0;
+        grid.info.origin.orientation.w = 0;
+        grid.info.origin.position.x = grid_min_x * grid.info.resolution ;
+        grid.info.origin.position.y = grid_min_y * grid.info.resolution ;
+        grid.info.origin.position.z = 0;
     }
 }
 
