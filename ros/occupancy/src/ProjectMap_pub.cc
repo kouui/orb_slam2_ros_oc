@@ -16,15 +16,17 @@ namespace ProjectMap
 
     void Pub::GetAndPublishMsgs ()
     {
+        /* currently we don't need all_pts_pub_gap @20190911
         if ( (all_pts_pub_gap_ > 0) && (pub_count_ >= all_pts_pub_gap_) )
         {
             pub_all_pts_ = true;
             pub_count_ = 0;
         }
+        */
 
-        if (pub_all_pts_ || slam_ptr_->getLoopClosing()->loop_detected || slam_ptr_->getTracker()->loop_detected)
+        if (slam_ptr_->getLoopClosing()->loop_detected || slam_ptr_->getTracker()->loop_detected)
         {
-            pub_all_pts_ = slam_ptr_->getTracker()->loop_detected = slam_ptr_->getLoopClosing()->loop_detected = false;
+            slam_ptr_->getTracker()->loop_detected = slam_ptr_->getLoopClosing()->loop_detected = false;
 
             geometry_msgs::PoseArray kfs_pts_array_ = GetAllKfsPts ();
             all_kfs_pts_publisher_.publish( kfs_pts_array_ );
@@ -38,8 +40,9 @@ namespace ProjectMap
 
             geometry_msgs::PoseArray kf_pts_array_ = GetSingleKfPts ();
             single_kf_pts_publisher_.publish( kf_pts_array_ );
-            std::cout << "published single kf pts" << std::endl;
+            std::cout << "published single kf pts" << " : " << pub_count_ << std::endl;
         }
+
 
     }
 
@@ -66,7 +69,7 @@ namespace ProjectMap
 
             /* ------------------------------------------------
 			add position(x,y,z) of all map points of current key_frame
-	    ------------------------------------------------ */
+	        ------------------------------------------------ */
             unsigned int n_pts_id_ = kfs_pts_array_.poses.size();
 			//! placeholder for number of points
             kfs_pts_array_.poses.push_back(geometry_msgs::Pose());
@@ -144,9 +147,9 @@ namespace ProjectMap
         pose_.position.y = (-1) * translation_.at<float>(0);
         pose_.position.z = (-1) * translation_.at<float>(1);
         pose_.orientation.x = q_[0];
-	pose_.orientation.y = q_[1];
-	pose_.orientation.z = q_[2];
-	pose_.orientation.w = q_[3];
+        pose_.orientation.y = q_[1];
+        pose_.orientation.z = q_[2];
+        pose_.orientation.w = q_[3];
 
         return pose_;
     }

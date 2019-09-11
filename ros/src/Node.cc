@@ -76,6 +76,9 @@ void Node::Update () {
   if (publish_projected_map_param_) {
       array_pub_ptr_->GetAndPublishMsgs ();
   }
+  //update_count_++;
+  //std::cout << "Node::Update : " << update_count_ << std::endl;
+  //std::cout << "is_keyframe : " << orb_slam_->getTracker()->mCurrentFrame.is_keyframe << std::endl;
 
 }
 

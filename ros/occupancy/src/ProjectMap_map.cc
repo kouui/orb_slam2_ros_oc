@@ -120,7 +120,8 @@ namespace ProjectMap
         { PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_); }
         if (publish_grid_map_cost_param_)
         { PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_); }
-        std::cout << "published in Single Callback" << std::endl;
+        map_count_++;
+        std::cout << "published in Single Callback" << " : " << map_count_ << std::endl;
     }
 
     void Map::UpdateGridMap (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array)

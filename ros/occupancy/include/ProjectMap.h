@@ -134,6 +134,8 @@ namespace ProjectMap
         double cloud_min_y_param_;
         double cloud_max_y_param_;
         int visit_thresh_param_;
+
+        unsigned int map_count_ = 0;
     };
 }
 #endif
