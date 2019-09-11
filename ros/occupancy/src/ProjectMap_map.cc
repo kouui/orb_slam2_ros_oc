@@ -11,13 +11,13 @@ namespace ProjectMap
         GetROSParameter ();
 
         // subscriber
-        single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1, &Map::SingleCallback, this);
-        all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, 1, &Map::AllCallback, this);
+        single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_param_, 1000, &Map::SingleCallback, this);
+        all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_param_, 1000, &Map::AllCallback, this);
         // publisher
         if (publish_grid_map_cost_param_)
-        { grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1); }
+        { grid_map_cost_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_cost", 1000); }
         if (publish_grid_map_visual_param_)
-        { grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1); }
+        { grid_map_visual_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid> (name_of_node_+"/grid_map_visual", 1000); }
 
         SetGridParameter ();
         CreateCvMat (h_, w_);
@@ -120,6 +120,7 @@ namespace ProjectMap
         { PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_); }
         if (publish_grid_map_cost_param_)
         { PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_); }
+        std::cout << "published in Single Callback" << std::endl;
     }
 
     void Map::UpdateGridMap (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array)
@@ -267,6 +268,7 @@ namespace ProjectMap
         { PublishTopic (grid_map_visual_publisher_, grid_map_visual_msg_); }
         if (publish_grid_map_cost_param_)
         { PublishTopic (grid_map_cost_publisher_, grid_map_cost_msg_); }
+        std::cout << "published in All Callback" << std::endl;
 
         loop_closure_being_processed_ = false;
     }

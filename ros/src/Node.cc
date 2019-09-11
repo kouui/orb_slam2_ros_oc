@@ -52,7 +52,7 @@ Node::~Node () {
   orb_slam_->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 
   delete orb_slam_;
-  delete array_pub_ptr_;
+  if (publish_projected_map_param_) delete array_pub_ptr_;
 }
 
 

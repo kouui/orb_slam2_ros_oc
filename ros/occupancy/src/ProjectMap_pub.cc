@@ -10,8 +10,8 @@ namespace ProjectMap
         slam_ptr_ = orb_slam_ptr;
         name_of_node_ = ros::this_node::getName();
 
-        all_kfs_pts_publisher_ = node_handle_.advertise<geometry_msgs::PoseArray> (name_of_node_+"/all_kfs_pts", 1);
-        single_kf_pts_publisher_ = node_handle_.advertise<geometry_msgs::PoseArray> (name_of_node_+"/single_kf_pts", 1);
+        all_kfs_pts_publisher_ = node_handle_.advertise<geometry_msgs::PoseArray> (name_of_node_+"/all_kfs_pts", 1000);
+        single_kf_pts_publisher_ = node_handle_.advertise<geometry_msgs::PoseArray> (name_of_node_+"/single_kf_pts", 1000);
     }
 
     void Pub::GetAndPublishMsgs ()
@@ -21,21 +21,26 @@ namespace ProjectMap
             pub_all_pts_ = true;
             pub_count_ = 0;
         }
+
         if (pub_all_pts_ || slam_ptr_->getLoopClosing()->loop_detected || slam_ptr_->getTracker()->loop_detected)
         {
             pub_all_pts_ = slam_ptr_->getTracker()->loop_detected = slam_ptr_->getLoopClosing()->loop_detected = false;
 
             geometry_msgs::PoseArray kfs_pts_array_ = GetAllKfsPts ();
             all_kfs_pts_publisher_.publish( kfs_pts_array_ );
+            std::cout << "published all kfs pts" << std::endl;
         }
-        else if (slam_ptr_->getTracker()->mCurrentFrame.is_keyframe)
+        //else 
+        if (slam_ptr_->getTracker()->mCurrentFrame.is_keyframe)
         {
             ++pub_count_;
             slam_ptr_->getTracker()->mCurrentFrame.is_keyframe = false;
 
             geometry_msgs::PoseArray kf_pts_array_ = GetSingleKfPts ();
             single_kf_pts_publisher_.publish( kf_pts_array_ );
+            std::cout << "published single kf pts" << std::endl;
         }
+
     }
 
 
@@ -61,7 +66,7 @@ namespace ProjectMap
 
             /* ------------------------------------------------
 			add position(x,y,z) of all map points of current key_frame
-			------------------------------------------------ */
+	    ------------------------------------------------ */
             unsigned int n_pts_id_ = kfs_pts_array_.poses.size();
 			//! placeholder for number of points
             kfs_pts_array_.poses.push_back(geometry_msgs::Pose());
@@ -139,9 +144,9 @@ namespace ProjectMap
         pose_.position.y = (-1) * translation_.at<float>(0);
         pose_.position.z = (-1) * translation_.at<float>(1);
         pose_.orientation.x = q_[0];
-		pose_.orientation.y = q_[1];
-		pose_.orientation.z = q_[2];
-		pose_.orientation.w = q_[3];
+	pose_.orientation.y = q_[1];
+	pose_.orientation.z = q_[2];
+	pose_.orientation.w = q_[3];
 
         return pose_;
     }

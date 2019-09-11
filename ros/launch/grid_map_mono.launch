@@ -9,16 +9,16 @@
        <param name="single_kf_pts_topic" type="string" value="/orb_slam2_mono/single_kf_pts" />
        <param name="frame_id" type="string" value="/map" />
        <param name="publish_grid_map_visual" type="bool" value="true" />
-       <param name="publish_grid_map_cost" type="bool" value="true" />
+       <param name="publish_grid_map_cost" type="bool" value="false" />
        <param name="use_keyboardUI" type="bool" value="false" />
-       <param name="free_thresh" type="double" value="0.6" />
-       <param name="occupied_thresh" type="double" value="0.4" />
-       <param name="scale_factor" type="double" value="4" />
+       <param name="free_thresh" type="double" value="0.7" />
+       <param name="occupied_thresh" type="double" value="0.49" />
+       <param name="scale_factor" type="double" value="10" />
        <param name="cloud_min_x" type="double" value="-5" />
        <param name="cloud_max_x" type="double" value="16" />
        <param name="cloud_min_y" type="double" value="-10" />
        <param name="cloud_max_y" type="double" value="10" />
-       <param name="visit_thresh" type="int" value="1" />
+       <param name="visit_thresh" type="int" value="0" />
   </node>
 
 </launch>
