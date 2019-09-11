@@ -77,7 +77,7 @@ namespace ProjectMap
 			unsigned int n_pts_ = 0;
             for (auto pt_ : map_pts_)
             {
-                if ( !pt_ || pt_->isBad() ) continue;
+                if ( !pt_ || pt_->isBad() || (pt_->nObs < min_observations_per_point_) ) continue;
 
                 cv::Mat pt_position_ = pt_->GetWorldPos();
                 if ( pt_position_.empty() ) continue;
@@ -115,7 +115,7 @@ namespace ProjectMap
         std::vector<ORB_SLAM2::MapPoint*> map_pts_ = slam_ptr_->GetTrackedMapPoints();
         for (auto pt_ : map_pts_)
         {
-            if ( !pt_ || pt_->isBad() ) continue;
+            if ( !pt_ || pt_->isBad() || (pt_->nObs < min_observations_per_point_) ) continue;
 
             cv::Mat pt_position_ = pt_->GetWorldPos();
             if (pt_position_.empty()) continue;
@@ -129,9 +129,10 @@ namespace ProjectMap
     {
         geometry_msgs::Pose pose_;
 
-        pose_.position.x =        translation_.at<float>(2);
-        pose_.position.y = (-1) * translation_.at<float>(0);
-        pose_.position.z = (-1) * translation_.at<float>(1);
+        pose_.position.x =          translation_.at<float>(2);
+        pose_.position.y = (-1.0) * translation_.at<float>(0);
+        pose_.position.z = (-1.0) * translation_.at<float>(1);
+        //std::cout << "PUB : " << pose_.position.x << pose_.position.y << pose_.position.z << std::endl;
 
         return pose_;
     }

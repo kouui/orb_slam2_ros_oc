@@ -55,6 +55,7 @@ namespace ProjectMap
         bool pub_all_pts_ = false;
         unsigned int all_pts_pub_gap_ = 0;
         unsigned int pub_count_ = 0;
+        unsigned int min_observations_per_point_ = 2;
 
         cv::Mat orb2ros = (cv::Mat_<float>(3,3) << 0,0,1,-1,0,0,0,-1,0);
     };

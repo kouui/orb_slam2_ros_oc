@@ -92,7 +92,7 @@ class Node
     bool publish_pose_param_;
     int min_observations_per_point_;
     bool publish_projected_map_param_;
-    //unsigned int update_count_ = 0;
+    unsigned int update_count_ = 0;
 };
 
 #endif //ORBSLAM2_ROS_NODE_H_

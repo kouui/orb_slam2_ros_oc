@@ -73,12 +73,13 @@ void Node::Update () {
     PublishMapPoints (orb_slam_->GetAllMapPoints());
   }
 
+  update_count_++;
+  std::cout << "Node::Update : " << update_count_ << std::endl;
+  std::cout << "is_keyframe : " << orb_slam_->getTracker()->mCurrentFrame.is_keyframe << std::endl;
+
   if (publish_projected_map_param_) {
       array_pub_ptr_->GetAndPublishMsgs ();
   }
-  //update_count_++;
-  //std::cout << "Node::Update : " << update_count_ << std::endl;
-  //std::cout << "is_keyframe : " << orb_slam_->getTracker()->mCurrentFrame.is_keyframe << std::endl;
 
 }
 
@@ -181,12 +182,13 @@ sensor_msgs::PointCloud2 Node::MapPointsToPointCloud (std::vector<ORB_SLAM2::Map
 
   float data_array[num_channels];
   for (unsigned int i=0; i<cloud.width; i++) {
+    //std::cout << "ROS_NOBS : " << map_points.at(i)->nObs << std::endl;
     if (map_points.at(i)->nObs >= min_observations_per_point_) {
       data_array[0] = map_points.at(i)->GetWorldPos().at<float> (2); //x. Do the transformation by just reading at the position of z instead of x
       data_array[1] = -1.0* map_points.at(i)->GetWorldPos().at<float> (0); //y. Do the transformation by just reading at the position of x instead of y
       data_array[2] = -1.0* map_points.at(i)->GetWorldPos().at<float> (1); //z. Do the transformation by just reading at the position of y instead of z
       //TODO dont hack the transformation but have a central conversion function for MapPointsToPointCloud and TransformFromMat
-
+      //std::cout << "ROS : " << data_array[0] << data_array[1] << data_array[2] << std::endl;
       memcpy(cloud_data_ptr+(i*cloud.point_step), data_array, num_channels*sizeof(float));
     }
   }
