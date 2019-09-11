@@ -573,16 +573,18 @@ bool System::SaveMap(const string &filename) {
     unique_lock<mutex>MapPointGlobal(MapPoint::mGlobalMutex);
     std::ofstream out(filename, std::ios_base::binary);
     if (!out) {
-        std::cerr << "cannot write to map file: " << map_file << std::endl;
+        std::cerr << "cannot write to map file: " << filename << std::endl;
         return false;
     }
 
     const rlim_t kNewStackSize = 64L * 1024L * 1024L;   // min stack size = 64 Mb
     const rlim_t kDefaultCallStackSize = GetCurrentCallStackSize();
+    /*
     if (!SetCallStackSize(kNewStackSize)) {
         std::cerr << "Error changing the call stack size; Aborting" << std::endl;
         return false;
     }
+    */
 
     try {
         std::cout << "saving map file: " << map_file << std::flush;

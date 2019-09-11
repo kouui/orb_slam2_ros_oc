@@ -48,8 +48,8 @@ Node::~Node () {
   // Stop all threads
   orb_slam_->Shutdown();
 
-  // Save camera trajectory
-  orb_slam_->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+  // Save camera trajectory, comment out @20190911
+  // orb_slam_->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 
   delete orb_slam_;
   if (publish_projected_map_param_) delete array_pub_ptr_;
