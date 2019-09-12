@@ -5,7 +5,7 @@
 Node::Node (ORB_SLAM2::System::eSensor sensor, ros::NodeHandle &node_handle, image_transport::ImageTransport &image_transport) {
   name_of_node_ = ros::this_node::getName();
   node_handle_ = node_handle;
-  min_observations_per_point_ = 2;
+  //min_observations_per_point_ = 2;
 
   //static parameters
   node_handle_.param(name_of_node_+ "/publish_pointcloud", publish_pointcloud_param_, true);
@@ -17,6 +17,7 @@ Node::Node (ORB_SLAM2::System::eSensor sensor, ros::NodeHandle &node_handle, ima
   node_handle_.param<std::string>(name_of_node_ + "/settings_file", settings_file_name_param_, "file_not_set");
   node_handle_.param(name_of_node_ + "/load_map", load_map_param_, false);
   node_handle_.param(name_of_node_ + "/publish_projected_map", publish_projected_map_param_, false);
+  node_handle_.param(name_of_node_ + "/min_observations_per_point", min_observations_per_point_, 2);
 
   orb_slam_ = new ORB_SLAM2::System (voc_file_name_param_, settings_file_name_param_, sensor, map_file_name_param_, load_map_param_);
 

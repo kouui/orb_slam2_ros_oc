@@ -110,8 +110,10 @@ namespace ProjectMap
         // get camera position
         cv::Mat T_ = kf_->GetCameraCenter();
 
-        kf_pts_array_.poses.push_back( TransformFromCamera_orb2ros(T_, R_) );
-
+        geometry_msgs::Pose pose = TransformFromCamera_orb2ros(T_, R_); // camera pose
+        //std::cout << "PUB : " <<  pose.position.x << ", " << pose.position.y << ", " << pose.position.z << std::endl;
+        //std::cout << "PUB : " <<  pose.orientation.x << ", " << pose.orientation.y << ", " << pose.orientation.z << ", " << pose.orientation.w << std::endl;
+        kf_pts_array_.poses.push_back( pose );
         std::vector<ORB_SLAM2::MapPoint*> map_pts_ = slam_ptr_->GetTrackedMapPoints();
         for (auto pt_ : map_pts_)
         {
