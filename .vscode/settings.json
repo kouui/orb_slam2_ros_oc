@@ -59,6 +59,8 @@
         "random": "cpp",
         "set": "cpp",
         "string": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "unordered_set": "cpp",
+        "csignal": "cpp"
     }
 }

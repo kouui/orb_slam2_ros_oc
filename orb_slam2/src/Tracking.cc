@@ -267,6 +267,7 @@ void Tracking::Track()
     }
 
     mLastProcessedState=mState;
+    mCurrentFrame.is_keyframe = false;
 
     // Get Map Mutex -> Map cannot be changed
     unique_lock<mutex> lock(mpMap->mMutexMapUpdate);

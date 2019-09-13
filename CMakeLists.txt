@@ -15,6 +15,7 @@ ELSE()
 ENDIF()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/orb_slam2/cmake_modules)
+#LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/ros/cmake_modules)
 
 find_package (catkin REQUIRED COMPONENTS
 roscpp
@@ -38,6 +39,16 @@ endif()
 
 find_package(Eigen3 3.1.0 REQUIRED)
 
+# octomap
+#find_package(Octomap)
+set (OCTOMAP_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/ros/Thirdparty/octomap/octomap/include)
+set (OCTOMAP_LIBRARY_DIRS ${PROJECT_SOURCE_DIR}/ros/Thirdparty/octomap/lib)
+# Set library names as absolute paths:
+set(OCTOMAP_LIBRARIES
+  ${PROJECT_SOURCE_DIR}/ros/Thirdparty/octomap/lib/liboctomap.so
+  ${PROJECT_SOURCE_DIR}/ros/Thirdparty/octomap/lib/liboctomath.so
+)
+
 set (DYNAMIC_RECONFIGURE_PATH ros/config/dynamic_reconfigure.cfg)
 execute_process(COMMAND chmod a+x ${DYNAMIC_RECONFIGURE_PATH}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -60,6 +71,8 @@ set(LIBS_ROS
 ${PROJECT_SOURCE_DIR}/orb_slam2/lib/lib${PROJECT_NAME}.so
 ${OpenCV_LIBS}
 ${catkin_LIBRARIES}
+${OCTOMAP_LIBRARY_DIRS}
+${OCTOMAP_LIBRARIES}
 )
 
 add_service_files(
@@ -82,6 +95,7 @@ ${PROJECT_SOURCE_DIR}/orb_slam2
 ${PROJECT_SOURCE_DIR}/orb_slam2/include
 ${PROJECT_SOURCE_DIR}/ros/include
 ${PROJECT_SOURCE_DIR}/ros/occupancy/include
+${OCTOMAP_INCLUDE_DIRS}
 ${EIGEN3_INCLUDE_DIR}
 ${catkin_INCLUDE_DIRS}
 )
@@ -131,7 +145,16 @@ add_executable (${PROJECT_NAME}_gridmap
 ros/occupancy/src/ProjectMap_map.cc
 )
 
+
 target_link_libraries(${PROJECT_NAME}_gridmap
+${LIBS_ROS}
+)
+
+add_executable (${PROJECT_NAME}_myocto
+ros/occupancy/src/MyOcto.cc
+)
+
+target_link_libraries(${PROJECT_NAME}_myocto
 ${LIBS_ROS}
 )
 
