@@ -8,9 +8,14 @@
        <param name="all_kfs_pts_topic" type="string" value="/orb_slam2_mono/all_kfs_pts" />
        <param name="single_kf_pts_topic" type="string" value="/orb_slam2_mono/single_kf_pts" />
        <param name="frame_id" type="string" value="/map" />
-       <param name="resolution" type="double" value="0.05" />
-       <param name="z_min" type="double" value="-0.1" />
-       <param name="z_max" type="double" value="0.8" />
+       <param name="resolution" type="double" value="0.02" />
+       <param name="z_min" type="double" value="-0.0" />
+       <param name="z_max" type="double" value="0.1" />
+       <param name="sensor_model/hit" type="double" value="0.9" />
+       <param name="sensor_model/miss" type="double" value="0.6" />
+       <param name="sensor_model/min" type="double" value="0.08" />
+       <param name="sensor_model/max" type="double" value="0.97" />
+       <param name="rangeMax" type="double" value="2.0" />
   </node>
 
 </launch>

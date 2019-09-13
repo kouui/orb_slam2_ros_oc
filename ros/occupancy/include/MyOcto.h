@@ -8,6 +8,7 @@
 // octomap 
 #include <octomap/octomap.h>
 #include <octomap/OcTree.h>
+#include <octomap/OcTreeKey.h>
 //#include <octomap/ColorOcTree.h>
 //#include <octomap/math/Pose6D.h>
 
@@ -21,7 +22,12 @@
 #include <ros/ros.h>
 #include "geometry_msgs/PoseArray.h"
 #include "geometry_msgs/PoseStamped.h"
+#include "geometry_msgs/Point.h"
 #include "nav_msgs/OccupancyGrid.h"
+#include <octomap_msgs/Octomap.h>
+#include <octomap_msgs/GetOctomap.h>
+#include <octomap_msgs/BoundingBoxQuery.h>
+#include <octomap_msgs/conversions.h>
 
 
 // thirdparty
@@ -39,29 +45,33 @@ namespace ns_myocto
 
     private:
         void GetROSParameter ();
+        void InitializeTree ();
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
         void AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
-        void AddPointsToTree (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array, unsigned int n_pts, unsigned int start_id);
-
+        void PublishFullOctomap ();
+        void PublishBinaryOctomap ();
 
         ros::NodeHandle node_handle_;
         ros::Subscriber all_kfs_pts_subscriber_;
         ros::Subscriber single_kf_pts_subscriber_;
+        ros::Publisher  binary_map_publisher_, full_map_publisher_;
         std::string name_of_node_;
 
         octomap::OcTree* tree_;
+        octomap::KeyRay keyRay_;  // temp storage for ray casting
 
 
         bool loop_closure_being_processed_ = false;
         unsigned int n_kf_received_ = 0;
+
+        std::string all_kfs_pts_topic_name_;
+        std::string single_kf_pts_topic_name_;
+        std::string frame_id_;
         double resolution_;
         double z_min_, z_max_;
+        double probHit_, probMiss_, thresMin_, thresMax_;
+        double rangeMax_;
 
-        std::string all_kfs_pts_topic_param_;
-        std::string single_kf_pts_topic_param_;
-        std::string frame_id_param_;
-        double resolution_param_;
-        double z_max_param_, z_min_param_;
 
     };
 }
