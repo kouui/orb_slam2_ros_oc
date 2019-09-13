@@ -10,7 +10,7 @@
 
        <!-- static parameters -->
        <param name="load_map" type="bool" value="false" />
-       <param name="map_file" type="string" value="/home/ubuntu/savefiles/street_800.bin" />
+       <param name="map_file" type="string" value="/home/ubuntu/savefiles/street_50.bin" />
        <param name="settings_file" type="string" value="$(find orb_slam2_ros)/orb_slam2/config/Stick_20.yaml" />
        <param name="voc_file" type="string" value="$(find orb_slam2_ros)/orb_slam2/Vocabulary/ORBvoc.txt" />
        
@@ -19,7 +19,7 @@
        <param name="pointcloud_frame_id" type="string" value="map" />
        <param name="camera_frame_id" type="string" value="camera_link" />
        <param name="min_num_kf_in_map" type="int" value="5" />
-       <param name="min_observations_per_point" type="int" value="3" />
+       <param name="min_observations_per_point" type="int" value="4" />
 
   </node>
 </launch>

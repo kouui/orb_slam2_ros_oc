@@ -53,7 +53,7 @@ namespace ProjectMap
         std::string name_of_node_;
 
         bool pub_all_pts_ = false;
-        unsigned int all_pts_pub_gap_ = 0;
+        unsigned int all_pts_pub_gap_ = 30;
         unsigned int pub_count_ = 0;
         unsigned int min_observations_per_point_ = 2;
 

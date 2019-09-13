@@ -46,10 +46,14 @@ namespace ns_myocto
     private:
         void GetROSParameter ();
         void InitializeTree ();
+        void UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells);
+        void UpdateTree (octomap::KeySet &free_cells, octomap::KeySet &occupied_cells);
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
         void AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
         void PublishFullOctomap ();
         void PublishBinaryOctomap ();
+        void CheckSpeckleNode ();
+        bool HaveNeighbor(const octomap::OcTreeKey &nKey);
 
         ros::NodeHandle node_handle_;
         ros::Subscriber all_kfs_pts_subscriber_;
@@ -71,6 +75,7 @@ namespace ns_myocto
         double z_min_, z_max_;
         double probHit_, probMiss_, thresMin_, thresMax_;
         double rangeMax_;
+        int multi_free_factor_;
 
 
     };

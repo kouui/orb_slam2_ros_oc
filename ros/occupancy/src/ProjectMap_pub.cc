@@ -16,15 +16,15 @@ namespace ProjectMap
 
     void Pub::GetAndPublishMsgs ()
     {
-        /* currently we don't need all_pts_pub_gap @20190911
+        pub_all_pts_ = false;
         if ( (all_pts_pub_gap_ > 0) && (pub_count_ >= all_pts_pub_gap_) )
         {
             pub_all_pts_ = true;
             pub_count_ = 0;
         }
-        */
+        
 
-        if (slam_ptr_->getLoopClosing()->loop_detected || slam_ptr_->getTracker()->loop_detected)
+        if (pub_all_pts_ || slam_ptr_->getLoopClosing()->loop_detected || slam_ptr_->getTracker()->loop_detected)
         {
             slam_ptr_->getTracker()->loop_detected = slam_ptr_->getLoopClosing()->loop_detected = false;
 
