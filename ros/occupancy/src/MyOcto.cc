@@ -12,7 +12,7 @@ namespace ns_myocto
 
         InitializeTree ();
 
-
+        
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_name_, 1000, &myocto::SingleCallback, this);
         all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_name_, 1000, &myocto::AllCallback, this);
@@ -31,12 +31,12 @@ namespace ns_myocto
         node_handle_.param(name_of_node_+"/resolution", resolution_, 0.05);
         node_handle_.param(name_of_node_+"/z_min", z_min_, -0.1);
         node_handle_.param(name_of_node_+"/z_max", z_max_, 0.8);
-        node_handle_.param("sensor_model/hit", probHit_, 0.7);
-        node_handle_.param("sensor_model/miss", probMiss_, 0.4);
-        node_handle_.param("sensor_model/min", thresMin_, 0.08);
-        node_handle_.param("sensor_model/max", thresMax_, 0.97);
-        node_handle_.param("rangeMax", rangeMax_, 4.0);
-        node_handle_.param("multi_free_factor", multi_free_factor_, 1);
+        node_handle_.param(name_of_node_+"/sensor_model/hit", probHit_, 0.7);
+        node_handle_.param(name_of_node_+"/sensor_model/miss", probMiss_, 0.4);
+        node_handle_.param(name_of_node_+"/sensor_model/min", thresMin_, 0.08);
+        node_handle_.param(name_of_node_+"/sensor_model/max", thresMax_, 0.97);
+        node_handle_.param(name_of_node_+"/rangeMax", rangeMax_, 4.0);
+        node_handle_.param(name_of_node_+"/multi_free_factor", multi_free_factor_, 1);
     }
 
     void myocto::InitializeTree ()
@@ -65,7 +65,6 @@ namespace ns_myocto
         else // ray longer than maxrange
         {
             octomap::point3d newend_point3d = camera_point3d + (map_point3d - camera_point3d).normalized() * rangeMax_;
-
             // free cells
             if (tree_->computeRayKeys(camera_point3d, newend_point3d, keyRay_))
                 free_cells.insert(keyRay_.begin(), keyRay_.end());

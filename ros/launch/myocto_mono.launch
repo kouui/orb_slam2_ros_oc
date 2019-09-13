@@ -11,12 +11,12 @@
        <param name="resolution" type="double" value="0.015" />
        <param name="z_min" type="double" value="-0.0" />
        <param name="z_max" type="double" value="0.1" />
-       <param name="sensor_model/hit" type="double" value="0.95" />
+       <param name="sensor_model/hit" type="double" value="0.9" />
        <param name="sensor_model/miss" type="double" value="0.4" />
        <param name="sensor_model/min" type="double" value="0.08" />
        <param name="sensor_model/max" type="double" value="0.97" />
-       <param name="rangeMax" type="double" value="1.0" />
-       <param name="multi_free_factor" type="int" value="1" />
+       <param name="rangeMax" type="double" value="1.5" />
+       <param name="multi_free_factor" type="int" value="3" />
   </node>
 
 </launch>
