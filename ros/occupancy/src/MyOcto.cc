@@ -18,8 +18,8 @@ namespace ns_myocto
         all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_name_, 1000, &myocto::AllCallback, this);
 
         // publisher
-        full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, true);
-        binary_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_binary", 1, true);
+        full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, !publish_topic_when_subscribed_);
+        binary_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_binary", 1, !publish_topic_when_subscribed_);
     }
 
     void myocto::GetROSParameter ()
@@ -37,6 +37,7 @@ namespace ns_myocto
         node_handle_.param(name_of_node_+"/sensor_model/max", thresMax_, 0.97);
         node_handle_.param(name_of_node_+"/rangeMax", rangeMax_, 4.0);
         node_handle_.param(name_of_node_+"/multi_free_factor", multi_free_factor_, 1);
+        node_handle_.param(name_of_node_+"/publish_topic_when_subscribed", publish_topic_when_subscribed_, true);
     }
 
     void myocto::InitializeTree ()
@@ -127,17 +128,7 @@ namespace ns_myocto
         tree_->prune();
 
         // publish
-        bool is_publishFullMap = true;//( full_map_publisher.getNumSubscribers() > 0);
-        bool is_publishBinaryMap = true;//( binary_map_publisher.getNumSubscribers() > 0);
-        
-        if (is_publishFullMap)
-        {
-            PublishFullOctomap ();
-        }
-        if (is_publishBinaryMap)
-        {
-            PublishBinaryOctomap ();
-        }
+        PublishAllTopics ();
     }
     
     void myocto::AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array)
@@ -183,27 +174,36 @@ namespace ns_myocto
         tree_->prune();
 
         // publish
-        bool is_publishFullMap = true;//( full_map_publisher.getNumSubscribers() > 0);
-        bool is_publishBinaryMap = true;//( binary_map_publisher.getNumSubscribers() > 0);
-        
-        if (is_publishFullMap)
-        {
-            PublishFullOctomap ();
-        }
-        if (is_publishBinaryMap)
-        {
-            PublishBinaryOctomap ();
-        }
+        PublishAllTopics ();
         
         loop_closure_being_processed_ = false;
     }
 
-    void myocto::PublishFullOctomap ()
+    void myocto::PublishAllTopics ()
+    {
+        bool is_publishFullMap   = (!publish_topic_when_subscribed_ || (full_map_publisher_.getNumSubscribers() > 0) );
+        bool is_publishBinaryMap = (!publish_topic_when_subscribed_ || (binary_map_publisher_.getNumSubscribers() > 0) );
+
+        const ros::Time rostime = ros::Time::now();
+        
+        if (is_publishFullMap)
+        {
+            PublishFullOctomap (rostime);
+        }
+        if (is_publishBinaryMap)
+        {
+            PublishBinaryOctomap (rostime);
+        }
+    }
+
+    
+
+    void myocto::PublishFullOctomap (const ros::Time& rostime)
     {
         octomap_msgs::Octomap msg;
         msg.header.seq = n_kf_received_;
         msg.header.frame_id = frame_id_;
-        msg.header.stamp = ros::Time::now();
+        msg.header.stamp = rostime;
         if (octomap_msgs::fullMapToMsg(*tree_, msg))
             full_map_publisher_.publish( msg );
         else
@@ -211,12 +211,12 @@ namespace ns_myocto
         
     }
 
-    void myocto::PublishBinaryOctomap ()
+    void myocto::PublishBinaryOctomap (const ros::Time& rostime)
     {
         octomap_msgs::Octomap msg;
         msg.header.seq = n_kf_received_;
         msg.header.frame_id = frame_id_;
-        msg.header.stamp = ros::Time::now();
+        msg.header.stamp = rostime;
         if (octomap_msgs::binaryMapToMsg(*tree_, msg))
             binary_map_publisher_.publish( msg );
         else

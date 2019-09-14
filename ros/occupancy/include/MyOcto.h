@@ -50,8 +50,9 @@ namespace ns_myocto
         void UpdateTree (octomap::KeySet &free_cells, octomap::KeySet &occupied_cells);
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
         void AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
-        void PublishFullOctomap ();
-        void PublishBinaryOctomap ();
+        void PublishAllTopics ();
+        void PublishFullOctomap (const ros::Time& rostime);
+        void PublishBinaryOctomap (const ros::Time& rostime);
         void CheckSpeckleNode ();
         bool HaveNeighbor(const octomap::OcTreeKey &nKey);
 
@@ -76,6 +77,7 @@ namespace ns_myocto
         double probHit_, probMiss_, thresMin_, thresMax_;
         double rangeMax_;
         int multi_free_factor_;
+        bool publish_topic_when_subscribed_;
 
 
     };

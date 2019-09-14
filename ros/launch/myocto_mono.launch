@@ -17,6 +17,7 @@
        <param name="sensor_model/max" type="double" value="0.97" />
        <param name="rangeMax" type="double" value="1.5" />
        <param name="multi_free_factor" type="int" value="3" />
+       <param name="publish_topic_when_subscribed" type="bool" value="true" />
   </node>
 
 </launch>
