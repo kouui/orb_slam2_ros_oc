@@ -46,7 +46,7 @@ namespace ns_myocto
     private:
         void GetROSParameter ();
         void InitializeTree ();
-        void UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells);
+        void UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells, bool isOutZLimit);
         void UpdateTree (octomap::KeySet &free_cells, octomap::KeySet &occupied_cells);
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
         void AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
@@ -78,6 +78,7 @@ namespace ns_myocto
         double rangeMax_;
         int multi_free_factor_;
         bool publish_topic_when_subscribed_;
+        float setFreeVal_= -2.2; // p=0.1
 
 
     };

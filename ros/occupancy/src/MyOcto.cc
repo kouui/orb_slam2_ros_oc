@@ -18,8 +18,8 @@ namespace ns_myocto
         all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_name_, 1000, &myocto::AllCallback, this);
 
         // publisher
-        full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, !publish_topic_when_subscribed_);
-        binary_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_binary", 1, !publish_topic_when_subscribed_);
+        full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, true);
+        binary_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_binary", 1, true);
     }
 
     void myocto::GetROSParameter ()
@@ -51,7 +51,7 @@ namespace ns_myocto
         tree_->setClampingThresMax(thresMax_);
     }
 
-    void myocto::UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells)
+    void myocto::UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells, bool isOutZLimit)
     {
         // free on ray; occupied on endpoint;
         if ((rangeMax_ < 0.0) || ((map_point3d - camera_point3d).norm() <= rangeMax_) )
@@ -62,8 +62,19 @@ namespace ns_myocto
 
             // occupied endpoint
             octomap::OcTreeKey key;
-            if (tree_->coordToKeyChecked(map_point3d, key))
-                occupied_cells.insert(key);      
+            if ( tree_->coordToKeyChecked(map_point3d, key) )
+            {
+                switch (isOutZLimit)
+                {
+                    case true : // if outside zlimit, set its value to free
+                        tree_->setNodeValue( key, setFreeVal_ , true);
+                        break;
+
+                    case false :
+                        occupied_cells.insert(key);
+                        break;
+                }
+            }     
         }
         else // ray longer than maxrange
         {
@@ -117,11 +128,11 @@ namespace ns_myocto
 
             // check moving difference between mappoint and camera_position in z direction
             float z_dif = (float) (pt.z - cam_pt.z); 
-            if ( (z_dif > z_max_) || (z_dif < z_min_) ) continue;
+            bool isOutZLimit = ( (z_dif > z_max_) || (z_dif < z_min_) );
             
             octomap::point3d map_point3d ( (float) pt.x, (float) pt.y, (float) pt.z );
 
-            UpdatePoint (camera_point3d, map_point3d, free_cells, occupied_cells);
+            UpdatePoint (camera_point3d, map_point3d, free_cells, occupied_cells, isOutZLimit);
         }
 
         UpdateTree (free_cells, occupied_cells);
@@ -158,11 +169,11 @@ namespace ns_myocto
 
                 // check moving difference between mappoint and camera_position in z direction
                 float z_dif = (float) (pt.z - cam_pt.z); 
-                if ( (z_dif > z_max_) || (z_dif < z_min_) ) continue;
+                bool isOutZLimit = ( (z_dif > z_max_) || (z_dif < z_min_) );
                 
                 octomap::point3d map_point3d ( (float) pt.x, (float) pt.y, (float) pt.z );
 
-                UpdatePoint (camera_point3d, map_point3d, free_cells, occupied_cells);
+                UpdatePoint (camera_point3d, map_point3d, free_cells, occupied_cells, isOutZLimit);
             }
 
             UpdateTree (free_cells, occupied_cells);
@@ -235,9 +246,7 @@ namespace ns_myocto
                 //std::cout << "node value : " << it->getValue() << it->getOccupancy()  << std::endl;
                 if ( !HaveNeighbor( it.getKey() ) )
                 {
-
-                    float set_val = -2.2; // p=0.1
-                    tree_->setNodeValue( it.getKey(), set_val , true); // this does kill occupied cells
+                    tree_->setNodeValue( it.getKey(), setFreeVal_ , true); // this does kill occupied cells
                 }
 
             }
