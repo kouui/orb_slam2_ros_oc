@@ -11,10 +11,14 @@
        <param name="resolution" type="double" value="0.015" />
        <param name="z_min" type="double" value="-0.0" />
        <param name="z_max" type="double" value="0.1" />
-       <param name="sensor_model/hit" type="double" value="0.9" />
-       <param name="sensor_model/miss" type="double" value="0.4" />
-       <param name="sensor_model/min" type="double" value="0.08" />
-       <param name="sensor_model/max" type="double" value="0.97" />
+       <!-- occupancy threshhold : less than this value -> free; larger than this value -> occupied -->
+       <param name="sensor_model/occupancyThres" type="double" value="0.60" />
+       <!-- the occupancy to integrate with one single hit (set occupied) -->
+       <param name="sensor_model/hit" type="double" value="0.55" />
+       <!-- the occupancy to integrate with one single miss (set free) -->
+       <param name="sensor_model/miss" type="double" value="0.30" />
+       <param name="sensor_model/min" type="double" value="0.10" />
+       <param name="sensor_model/max" type="double" value="0.90" />
        <param name="rangeMax" type="double" value="1.5" />
        <param name="multi_free_factor" type="int" value="3" />
        <param name="publish_topic_when_subscribed" type="bool" value="true" />

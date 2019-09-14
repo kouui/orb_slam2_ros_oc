@@ -31,11 +31,12 @@ namespace ns_myocto
         node_handle_.param(name_of_node_+"/resolution", resolution_, 0.05);
         node_handle_.param(name_of_node_+"/z_min", z_min_, -0.1);
         node_handle_.param(name_of_node_+"/z_max", z_max_, 0.8);
-        node_handle_.param(name_of_node_+"/sensor_model/hit", probHit_, 0.7);
+        node_handle_.param(name_of_node_+"/sensor_model/occupancyThres", thresOccupancy_, 0.6);
+        node_handle_.param(name_of_node_+"/sensor_model/hit", probHit_, 0.6);
         node_handle_.param(name_of_node_+"/sensor_model/miss", probMiss_, 0.4);
-        node_handle_.param(name_of_node_+"/sensor_model/min", thresMin_, 0.08);
-        node_handle_.param(name_of_node_+"/sensor_model/max", thresMax_, 0.97);
-        node_handle_.param(name_of_node_+"/rangeMax", rangeMax_, 4.0);
+        node_handle_.param(name_of_node_+"/sensor_model/min", thresMin_, 0.10);
+        node_handle_.param(name_of_node_+"/sensor_model/max", thresMax_, 0.90);
+        node_handle_.param(name_of_node_+"/rangeMax", rangeMax_, 3.0);
         node_handle_.param(name_of_node_+"/multi_free_factor", multi_free_factor_, 1);
         node_handle_.param(name_of_node_+"/publish_topic_when_subscribed", publish_topic_when_subscribed_, true);
     }
@@ -43,6 +44,7 @@ namespace ns_myocto
     void myocto::InitializeTree ()
     {
         tree_ = new octomap::OcTree ( resolution_ );
+        tree_->setOccupancyThres(thresOccupancy_);
         tree_->setProbHit(probHit_);
         tree_->setProbMiss(probMiss_);
         tree_->setClampingThresMin(thresMin_);
@@ -230,11 +232,12 @@ namespace ns_myocto
         {
             if ( tree_->isNodeOccupied(*it) )
             {
+                //std::cout << "node value : " << it->getValue() << it->getOccupancy()  << std::endl;
                 if ( !HaveNeighbor( it.getKey() ) )
                 {
 
                     float set_val = -2.2; // p=0.1
-                    tree_->setNodeValue( it.getKey(), set_val ); // this does kill occupied cells
+                    tree_->setNodeValue( it.getKey(), set_val , true); // this does kill occupied cells
                 }
 
             }

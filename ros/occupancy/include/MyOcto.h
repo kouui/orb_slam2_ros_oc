@@ -74,7 +74,7 @@ namespace ns_myocto
         std::string frame_id_;
         double resolution_;
         double z_min_, z_max_;
-        double probHit_, probMiss_, thresMin_, thresMax_;
+        double probHit_, probMiss_, thresMin_, thresMax_, thresOccupancy_;
         double rangeMax_;
         int multi_free_factor_;
         bool publish_topic_when_subscribed_;
