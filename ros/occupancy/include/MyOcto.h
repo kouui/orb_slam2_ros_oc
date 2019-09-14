@@ -37,15 +37,41 @@
 
 namespace ns_myocto
 {
+    class grid2dmap
+    {
+    public :
+        grid2dmap () { };
+        ~grid2dmap () { };
+
+        nav_msgs::OccupancyGrid map;
+
+        double z_min_, z_max_;
+        double thresOccupancy_;
+
+        // min --> minus value; max --> positive value
+        double defaultPaddedMinX_, defaultPaddedMaxX_, defaultPaddedMinY_, defaultPaddedMaxY_;
+        octomap::OcTreeKey paddedMinKey_, paddedMaxKey_;
+        unsigned scale_;
+        double paddedMinX_, paddedMaxX_, paddedMinY_, paddedMaxY_;
+
+    };
+
     class myocto
     {
     public:
         myocto (ros::NodeHandle &node_handle);
-        ~myocto () { delete tree_; };
+        ~myocto () 
+        { 
+            delete tree_;
+            delete ptr_g2d_; 
+        };
 
     private:
         void GetROSParameter ();
         void InitializeTree ();
+        void InitializeGrid2dmap ();
+        octomap::OcTreeKey InitPaddedMinKey();
+        octomap::OcTreeKey InitPaddedMaxKey();
         void UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells, bool isOutZLimit);
         void UpdateTree (octomap::KeySet &free_cells, octomap::KeySet &occupied_cells);
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
@@ -53,13 +79,14 @@ namespace ns_myocto
         void PublishAllTopics ();
         void PublishFullOctomap (const ros::Time& rostime);
         void PublishBinaryOctomap (const ros::Time& rostime);
+        void PublishGrid2dmap (const ros::Time& rostime);
         void CheckSpeckleNode ();
         bool HaveNeighbor(const octomap::OcTreeKey &nKey);
 
         ros::NodeHandle node_handle_;
         ros::Subscriber all_kfs_pts_subscriber_;
         ros::Subscriber single_kf_pts_subscriber_;
-        ros::Publisher  binary_map_publisher_, full_map_publisher_;
+        ros::Publisher  binary_map_publisher_, full_map_publisher_, grid2dmap_publisher_;
         std::string name_of_node_;
 
         octomap::OcTree* tree_;
@@ -79,6 +106,10 @@ namespace ns_myocto
         int multi_free_factor_;
         bool publish_topic_when_subscribed_;
         float setFreeVal_= -2.2; // p=0.1
+
+        // 2d projected map
+        grid2dmap* ptr_g2d_;
+        unsigned maxTreeDepth_;
 
 
     };

@@ -12,6 +12,8 @@ namespace ns_myocto
 
         InitializeTree ();
 
+        InitializeGrid2dmap ();
+
         
         // subscriber
         single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_name_, 1000, &myocto::SingleCallback, this);
@@ -20,6 +22,7 @@ namespace ns_myocto
         // publisher
         full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, true);
         binary_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_binary", 1, true);
+        grid2dmap_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid>(name_of_node_+"/grid2dmap", 1, true);
     }
 
     void myocto::GetROSParameter ()
@@ -49,6 +52,92 @@ namespace ns_myocto
         tree_->setProbMiss(probMiss_);
         tree_->setClampingThresMin(thresMin_);
         tree_->setClampingThresMax(thresMax_);
+
+        maxTreeDepth_ = tree_->getTreeDepth();
+    }
+
+    void myocto::InitializeGrid2dmap ()
+    {
+
+        ptr_g2d_ = new grid2dmap ();
+        
+        node_handle_.param(name_of_node_+"/grid2dmap/default_padded_minX", ptr_g2d_->defaultPaddedMinX_, -3.0);
+        node_handle_.param(name_of_node_+"/grid2dmap/default_padded_maxX", ptr_g2d_->defaultPaddedMaxX_, 3.0);
+        node_handle_.param(name_of_node_+"/grid2dmap/default_padded_minY", ptr_g2d_->defaultPaddedMinY_, -3.0);
+        node_handle_.param(name_of_node_+"/grid2dmap/default_padded_maxY", ptr_g2d_->defaultPaddedMaxY_, 3.0);
+
+        ptr_g2d_->map.info.resolution = tree_->getResolution();
+        ptr_g2d_->map.header.frame_id = frame_id_;      
+        // ptr_g2d_->map.header.stamp = ?  // define the map before map being updated
+
+        ptr_g2d_->paddedMinKey_ = InitPaddedMinKey ();
+        ptr_g2d_->paddedMaxKey_ = InitPaddedMaxKey ();
+
+        ptr_g2d_->scale_ = 1;
+        ptr_g2d_->map.info.width = (ptr_g2d_->paddedMaxKey_[0] - ptr_g2d_->paddedMinKey_[0])/ptr_g2d_->scale_  + 1;
+        ptr_g2d_->map.info.height = (ptr_g2d_->paddedMaxKey_[1] - ptr_g2d_->paddedMinKey_[1])/ptr_g2d_->scale_  + 1;
+
+
+        octomap::point3d origin = tree_->keyToCoord(ptr_g2d_->paddedMinKey_, maxTreeDepth_);
+        double gridSize = tree_->getResolution(); //
+        //if (std::abs(gridSize-ptr_g2d_->map.info.resolution) > 1e-6)
+        // we will keep working under maximum resolution, so the resolution of ptr_g2d_->map will not change
+        ptr_g2d_->map.info.origin.position.x = origin.x() - gridSize*0.5;
+        ptr_g2d_->map.info.origin.position.y = origin.y() - gridSize*0.5;
+
+        ptr_g2d_->map.data.resize( ptr_g2d_->map.info.width*ptr_g2d_->map.info.height , 50 );
+    }
+
+    octomap::OcTreeKey myocto::InitPaddedMinKey()
+    {
+
+        double X, Y, Z;
+        tree_->getMetricMin(X, Y, Z);
+        octomap::point3d Pt (X, Y, Z);
+        octomap::OcTreeKey Key0 = tree_->coordToKey(Pt, maxTreeDepth_);
+
+        // campare with the given default paddings
+        X = std::min( X, ptr_g2d_->defaultPaddedMinX_ );
+        Y = std::min( Y, ptr_g2d_->defaultPaddedMinY_ );
+
+        ptr_g2d_->paddedMinX_ = X;
+        ptr_g2d_->paddedMinY_ = Y;
+        
+
+        Pt = octomap::point3d(X, Y, Z);
+        octomap::OcTreeKey paddedKey;
+        if ( !tree_->coordToKeyChecked(Pt, maxTreeDepth_, paddedKey) )
+        {
+            ROS_ERROR("Could not create padded min OcTree key at %f %f %f", Pt.x(), Pt.y(), Pt.z());
+            paddedKey = Key0;
+        }
+
+        return paddedKey;
+    }
+
+    octomap::OcTreeKey myocto::InitPaddedMaxKey()
+    {
+        double X, Y, Z;
+        tree_->getMetricMax(X, Y, Z);
+        octomap::point3d Pt (X, Y, Z);
+        octomap::OcTreeKey Key0 = tree_->coordToKey(Pt, maxTreeDepth_);
+
+        // campare with the given default paddings
+        X = std::max( X, ptr_g2d_->defaultPaddedMaxX_ );
+        Y = std::max( Y, ptr_g2d_->defaultPaddedMaxY_ );
+
+        ptr_g2d_->paddedMaxX_ = X;
+        ptr_g2d_->paddedMaxY_ = Y;
+
+        Pt = octomap::point3d(X, Y, Z);
+        octomap::OcTreeKey paddedKey;
+        if ( !tree_->coordToKeyChecked(Pt, maxTreeDepth_, paddedKey) )
+        {
+            ROS_ERROR("Could not create padded max OcTree key at %f %f %f", Pt.x(), Pt.y(), Pt.z());
+            paddedKey = Key0;
+        }
+
+        return paddedKey;
     }
 
     void myocto::UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells, bool isOutZLimit)
@@ -97,13 +186,13 @@ namespace ns_myocto
         {
             //if (occupied_cells.find(*it) == occupied_cells.end()){
             for (auto i = 0; i < multi_free_factor_; i++)
-                tree_->updateNode(*it, false);
+                tree_->updateNode(*it, false, true);
             //}
         }
 
         // now mark all occupied cells:
         for (octomap::KeySet::iterator it = occupied_cells.begin(), end=occupied_cells.end(); it!= end; it++)
-            tree_->updateNode(*it, true);
+            tree_->updateNode(*it, true, true);
     }
 
     void myocto::SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array)
@@ -128,7 +217,9 @@ namespace ns_myocto
 
             // check moving difference between mappoint and camera_position in z direction
             float z_dif = (float) (pt.z - cam_pt.z); 
-            bool isOutZLimit = ( (z_dif > z_max_) || (z_dif < z_min_) );
+            if (z_dif > z_max_) continue;
+            bool isOutZLimit = (z_dif < z_min_);
+            if (isOutZLimit) continue;
             
             octomap::point3d map_point3d ( (float) pt.x, (float) pt.y, (float) pt.z );
 
@@ -152,6 +243,7 @@ namespace ns_myocto
         unsigned int n_kf = kfs_pts_array->poses[0].position.x;
         std::cout << "Resetting grid map with" << n_kf << "key frames\n";
 
+        octomap::KeySet free_cells, occupied_cells;
         unsigned int id = 0;
         for (auto kf_id = 0; kf_id < n_kf; ++kf_id)
         {
@@ -162,24 +254,27 @@ namespace ns_myocto
             unsigned int start_id = id + 1;
             unsigned int end_id = start_id + n_pts;
 
-            octomap::KeySet free_cells, occupied_cells;
+            
             for (unsigned int pi = start_id; pi < end_id; ++pi)
             {
                 geometry_msgs::Point pt = kfs_pts_array->poses[pi].position;
 
                 // check moving difference between mappoint and camera_position in z direction
                 float z_dif = (float) (pt.z - cam_pt.z); 
-                bool isOutZLimit = ( (z_dif > z_max_) || (z_dif < z_min_) );
+                if (z_dif > z_max_) continue;
+                bool isOutZLimit = (z_dif < z_min_);
+                if (isOutZLimit) continue;
                 
                 octomap::point3d map_point3d ( (float) pt.x, (float) pt.y, (float) pt.z );
 
                 UpdatePoint (camera_point3d, map_point3d, free_cells, occupied_cells, isOutZLimit);
             }
 
-            UpdateTree (free_cells, occupied_cells);
+            
 
             id += n_pts;
         }
+        UpdateTree (free_cells, occupied_cells);
         // check speckle node
         CheckSpeckleNode ();
 
@@ -196,6 +291,7 @@ namespace ns_myocto
     {
         bool is_publishFullMap   = (!publish_topic_when_subscribed_ || (full_map_publisher_.getNumSubscribers() > 0) );
         bool is_publishBinaryMap = (!publish_topic_when_subscribed_ || (binary_map_publisher_.getNumSubscribers() > 0) );
+        bool is_publishGrid2dmap = (!publish_topic_when_subscribed_ || (grid2dmap_publisher_.getNumSubscribers() > 0) );
 
         const ros::Time rostime = ros::Time::now();
         
@@ -206,6 +302,10 @@ namespace ns_myocto
         if (is_publishBinaryMap)
         {
             PublishBinaryOctomap (rostime);
+        }
+        if (is_publishGrid2dmap)
+        {
+            PublishGrid2dmap (rostime);
         }
     }
 
@@ -235,6 +335,12 @@ namespace ns_myocto
         else
             ROS_ERROR("Error serializing OctoMap");
         
+    }
+
+    void myocto::PublishGrid2dmap (const ros::Time& rostime)
+    {
+        ptr_g2d_->map.header.stamp = rostime;
+        grid2dmap_publisher_.publish(ptr_g2d_->map); 
     }
 
     void myocto::CheckSpeckleNode ()

@@ -5,6 +5,8 @@
        <!--<remap from="/camera/image_raw" to="/mynteye/left_rect/image_rect" />-->
 
        <!-- static parameters -->
+       
+       <!-- octree parameters -->
        <param name="all_kfs_pts_topic" type="string" value="/orb_slam2_mono/all_kfs_pts" />
        <param name="single_kf_pts_topic" type="string" value="/orb_slam2_mono/single_kf_pts" />
        <param name="frame_id" type="string" value="/map" />
@@ -14,7 +16,7 @@
        <!-- occupancy threshhold : less than this value -> free; larger than this value -> occupied -->
        <param name="sensor_model/occupancyThres" type="double" value="0.50" />
        <!-- the occupancy to integrate with one single hit (set occupied) -->
-       <param name="sensor_model/hit" type="double" value="0.60" />
+       <param name="sensor_model/hit" type="double" value="0.70" />
        <!-- the occupancy to integrate with one single miss (set free) -->
        <param name="sensor_model/miss" type="double" value="0.46" />
        <param name="sensor_model/min" type="double" value="0.10" />
@@ -22,6 +24,12 @@
        <param name="rangeMax" type="double" value="1.5" />
        <param name="multi_free_factor" type="int" value="3" />
        <param name="publish_topic_when_subscribed" type="bool" value="true" />
+
+       <!-- grid2dmap parameters -->
+       <param name="grid2dmap/default_padded_minX" type="double" value="-1.0" />
+       <param name="grid2dmap/default_padded_maxX" type="double" value="5.0" />
+       <param name="grid2dmap/default_padded_minY" type="double" value="-3.0" />
+       <param name="grid2dmap/default_padded_maxY" type="double" value="3.0" />
   </node>
 
 </launch>
