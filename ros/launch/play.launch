@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+    <!-- Play rosbag -->
+
+    <arg name="path" default="/home/ubuntu/datasets/" />
+    <arg name="file_1" default="street.bag" />
+    <arg name="start" default="60" />
+    
+    <node name="player" pkg="rosbag" type="play" output="screen" args="$(arg path)$(arg file_1) -s $(arg start)">
+        <remap from="/cv_camera/image_gray" to="/camera/image_raw" />
+    </node> 
+
+
+</launch>

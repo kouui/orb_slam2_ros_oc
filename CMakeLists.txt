@@ -141,20 +141,27 @@ endif()
 target_link_libraries(${PROJECT_NAME} ${BOOST_SERIALIZATION})
 #-------------------------------------------------------------
 # ros node GridMap
-add_executable (${PROJECT_NAME}_gridmap
-ros/occupancy/src/ProjectMap_map.cc
-)
+#add_executable (${PROJECT_NAME}_gridmap
+#ros/occupancy/src/ProjectMap_map.cc
+#)
 
-
-target_link_libraries(${PROJECT_NAME}_gridmap
-${LIBS_ROS}
-)
+#target_link_libraries(${PROJECT_NAME}_gridmap
+#${LIBS_ROS}
+#)
 
 add_executable (${PROJECT_NAME}_myocto
 ros/occupancy/src/MyOcto.cc
 )
 
 target_link_libraries(${PROJECT_NAME}_myocto
+${LIBS_ROS}
+)
+
+add_executable (${PROJECT_NAME}_myocmap
+ros/occupancy/src/MyOcMap.cc
+)
+
+target_link_libraries(${PROJECT_NAME}_myocmap
 ${LIBS_ROS}
 )
 

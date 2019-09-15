@@ -22,7 +22,7 @@ namespace ns_myocto
         // publisher
         full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, true);
         binary_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_binary", 1, true);
-        grid2dmap_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid>(name_of_node_+"/grid2dmap", 1, true);
+        //grid2dmap_publisher_ = node_handle_.advertise<nav_msgs::OccupancyGrid>(name_of_node_+"/grid2dmap", 1, true);
     }
 
     void myocto::GetROSParameter ()
@@ -55,7 +55,7 @@ namespace ns_myocto
 
         maxTreeDepth_ = tree_->getTreeDepth();
     }
-
+    /*
     void myocto::InitializeGrid2dmap ()
     {
 
@@ -149,6 +149,7 @@ namespace ns_myocto
 
         //octomap::OcTreeKey minKey = key->getIndexKey();
     }
+    */
 
     void myocto::UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells, bool isOutZLimit)
     {
@@ -213,7 +214,7 @@ namespace ns_myocto
         if (loop_closure_being_processed_) return;
 
         n_kf_received_++;
-        std::cout << "Received " << n_kf_received_ << " frames.\n";
+        //std::cout << "Received " << n_kf_received_ << " frames.\n";
 
         const geometry_msgs::Point cam_pt = kf_pts_array->poses[0].position;
         octomap::point3d camera_point3d ( (float) cam_pt.x, (float) cam_pt.y, (float) cam_pt.z );
@@ -253,7 +254,7 @@ namespace ns_myocto
 
         tree_->clear();
         unsigned int n_kf = kfs_pts_array->poses[0].position.x;
-        std::cout << "Resetting grid map with" << n_kf << "key frames\n";
+        std::cout << "Resetting grid map with " << n_kf << " key frames\n";
 
         octomap::KeySet free_cells, occupied_cells;
         unsigned int id = 0;
@@ -303,7 +304,7 @@ namespace ns_myocto
     {
         bool is_publishFullMap   = (!publish_topic_when_subscribed_ || (full_map_publisher_.getNumSubscribers() > 0) );
         bool is_publishBinaryMap = (!publish_topic_when_subscribed_ || (binary_map_publisher_.getNumSubscribers() > 0) );
-        bool is_publishGrid2dmap = (!publish_topic_when_subscribed_ || (grid2dmap_publisher_.getNumSubscribers() > 0) );
+        //bool is_publishGrid2dmap = (!publish_topic_when_subscribed_ || (grid2dmap_publisher_.getNumSubscribers() > 0) );
 
         const ros::Time rostime = ros::Time::now();
         
@@ -315,10 +316,12 @@ namespace ns_myocto
         {
             PublishBinaryOctomap (rostime);
         }
+        /*
         if (is_publishGrid2dmap)
         {
             PublishGrid2dmap (rostime);
         }
+        */
     }
 
     
@@ -348,12 +351,13 @@ namespace ns_myocto
             ROS_ERROR("Error serializing OctoMap");
         
     }
-
+    /*
     void myocto::PublishGrid2dmap (const ros::Time& rostime)
     {
         ptr_g2d_->map.header.stamp = rostime;
         grid2dmap_publisher_.publish(ptr_g2d_->map); 
     }
+    */
 
     void myocto::CheckSpeckleNode ()
     {

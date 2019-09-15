@@ -1,0 +1,16 @@
+<launch>
+
+  <node name="myocmap" pkg="orb_slam2_ros"
+      type="orb_slam2_ros_myocmap" output="screen">
+       <!--<remap from="/camera/image_raw" to="/mynteye/left_rect/image_rect" />-->
+
+       <!-- static parameters -->
+       <param name="octomap_full_topic" type="string" value="/myocto/octomap_full" />
+       <param name="threshold_occupancy_occupied" type="double" value="0.5" />
+       <param name="threshold_occupancy_free" type="double" value="0.5" />
+       <param name="publish_topic_when_subscribed" type="bool" value="true" />
+       <!-- mode could be default/maximum -->
+       <param name="mode" type="string" value="default" />
+  </node>
+
+</launch>

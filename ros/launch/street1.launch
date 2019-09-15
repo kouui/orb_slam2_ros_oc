@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+    <include file="$(find orb_slam2_ros)/ros/launch/orb_slam2_stick_20.launch">
+    </include>
+
+    <include file="$(find orb_slam2_ros)/ros/launch/myocto_mono.launch">
+    </include> 
+
+    <include file="$(find orb_slam2_ros)/ros/launch/myocmap_mono.launch">
+    </include> 
+
+    <!-- Show in Rviz   -->
+    <node name="rviz" pkg="rviz" type="rviz" >
+        <param name="display-config" value="$(find orb_slam2_ros)/ros/rviz/street.rviz"/>
+    </node>
+
+
+</launch>

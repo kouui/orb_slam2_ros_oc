@@ -31,12 +31,13 @@
 
 
 // thirdparty
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui_c.h>
-#include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/core/core.hpp>
+//#include <opencv2/highgui/highgui_c.h>
+//#include <opencv2/highgui/highgui.hpp>
 
 namespace ns_myocto
 {
+    /*
     class grid2dmap
     {
     public :
@@ -56,6 +57,7 @@ namespace ns_myocto
 
 
     };
+    */
 
     class myocto
     {
@@ -64,16 +66,18 @@ namespace ns_myocto
         ~myocto () 
         { 
             delete tree_;
-            delete ptr_g2d_; 
+            //delete ptr_g2d_; 
         };
 
     private:
         void GetROSParameter ();
         void InitializeTree ();
+        /*
         void InitializeGrid2dmap ();
         octomap::OcTreeKey InitPaddedMinKey();
         octomap::OcTreeKey InitPaddedMaxKey();
         void ProcessKeyToGrid2dmap (octomap::OcTreeKey key);
+        */
         void UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells, bool isOutZLimit);
         void UpdateTree (octomap::KeySet &free_cells, octomap::KeySet &occupied_cells);
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
@@ -81,7 +85,7 @@ namespace ns_myocto
         void PublishAllTopics ();
         void PublishFullOctomap (const ros::Time& rostime);
         void PublishBinaryOctomap (const ros::Time& rostime);
-        void PublishGrid2dmap (const ros::Time& rostime);
+        //void PublishGrid2dmap (const ros::Time& rostime);
         void CheckSpeckleNode ();
         bool HaveNeighbor(const octomap::OcTreeKey &nKey);
 
@@ -111,7 +115,7 @@ namespace ns_myocto
         unsigned maxTreeDepth_;
 
         // 2d projected map
-        grid2dmap* ptr_g2d_;
+        //grid2dmap* ptr_g2d_;
 
 
     };
