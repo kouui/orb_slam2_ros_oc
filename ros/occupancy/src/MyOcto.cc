@@ -167,7 +167,7 @@ namespace ns_myocto
                 switch (isOutZLimit)
                 {
                     case true : // if outside zlimit, set its value to free
-                        tree_->setNodeValue( key, setFreeVal_ , true);
+                        tree_->setNodeValue( key, setFreeVal_ , false);
                         break;
 
                     case false :
@@ -197,7 +197,7 @@ namespace ns_myocto
         {
             //if (occupied_cells.find(*it) == occupied_cells.end()){
             for (auto i = 0; i < multi_free_factor_; i++)
-                tree_->updateNode(*it, false, true);
+                tree_->updateNode(*it, false, false);
             
             //ProcessKeyToGrid2dmap (*it);
             //}
@@ -205,7 +205,7 @@ namespace ns_myocto
 
         // now mark all occupied cells:
         for (octomap::KeySet::iterator it = occupied_cells.begin(), end=occupied_cells.end(); it!= end; it++)
-            tree_->updateNode(*it, true, true);
+            tree_->updateNode(*it, true, false);
     }
 
     void myocto::SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array)
@@ -368,7 +368,7 @@ namespace ns_myocto
                 //std::cout << "node value : " << it->getValue() << it->getOccupancy()  << std::endl;
                 if ( !HaveNeighbor( it.getKey() ) )
                 {
-                    tree_->setNodeValue( it.getKey(), setFreeVal_ , true); // this does kill occupied cells
+                    tree_->setNodeValue( it.getKey(), setFreeVal_ , false); // this does kill occupied cells
                 }
 
             }
