@@ -29,17 +29,17 @@ namespace ns_myocmap
 
     void myocmap::OctomapFullCallback (const octomap_msgs::OctomapConstPtr& msg)
     {
-        std::cout << "step 1 --> ";
+        //std::cout << "step 1 --> ";
         // creating octree
         octomap::OcTree* octomap = NULL;
         octomap::AbstractOcTree* tree = octomap_msgs::msgToMap(*msg);
 
-        std::cout << "step 2 --> ";
+        //std::cout << "step 2 --> ";
 
         if (tree)
             octomap = dynamic_cast<octomap::OcTree*>(tree);
 
-        std::cout << "step 3 --> ";
+        //std::cout << "step 3 --> ";
         
         if (!octomap)
         {
@@ -47,7 +47,7 @@ namespace ns_myocmap
             return;
         }
 
-        std::cout << "step 4 --> ";
+        //std::cout << "step 4 --> ";
 
         // get dimensions of octree
         double minX, minY, minZ, maxX, maxY, maxZ;
@@ -57,7 +57,7 @@ namespace ns_myocmap
 
         unsigned int tree_depth = octomap->getTreeDepth();
 
-        std::cout << "step 5 --> ";
+        //std::cout << "step 5 --> ";
 
         octomap::OcTreeKey paddedMinKey = octomap->coordToKey(minPt);
 
@@ -78,7 +78,7 @@ namespace ns_myocmap
         occupancy_map.data.clear();
         occupancy_map.data.resize(width*height, -1);
 
-        std::cout << "step 6 --> ";
+        //std::cout << "step 6 --> ";
 
         // traverse all leafs in the tree:
         //unsigned int treeDepth = std::min<unsigned int>(max_octree_depth_, octomap->getTreeDepth());
@@ -116,12 +116,12 @@ namespace ns_myocmap
                 }
         }
 
-        std::cout << "step 7 --> ";
+        //std::cout << "step 7 --> ";
 
         delete octomap;
-        std::cout << "step 8 --> ";
+        //std::cout << "step 8 --> ";
         occupancy_map_publisher_.publish(occupancy_map);
-        std::cout << "step 9 --> " << std::endl;
+        //std::cout << "step 9 --> " << std::endl;
         //delete occupancy_map;
 
     }
