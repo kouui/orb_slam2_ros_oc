@@ -30,6 +30,8 @@
        <param name="grid2dmap/default_padded_maxX" type="double" value="5.0" />
        <param name="grid2dmap/default_padded_minY" type="double" value="-3.0" />
        <param name="grid2dmap/default_padded_maxY" type="double" value="3.0" />
+       <param name="grid2dmap/threshold_occupancy_occupied" type="double" value="0.5" />
+       <param name="grid2dmap/threshold_occupancy_free" type="double" value="0.5" />
   </node>
 
 </launch>

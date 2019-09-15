@@ -12,7 +12,7 @@ namespace ns_myocto
 
         InitializeTree ();
 
-        InitializeGrid2dmap ();
+        //InitializeGrid2dmap ();
 
         
         // subscriber
@@ -65,6 +65,9 @@ namespace ns_myocto
         node_handle_.param(name_of_node_+"/grid2dmap/default_padded_maxX", ptr_g2d_->defaultPaddedMaxX_, 3.0);
         node_handle_.param(name_of_node_+"/grid2dmap/default_padded_minY", ptr_g2d_->defaultPaddedMinY_, -3.0);
         node_handle_.param(name_of_node_+"/grid2dmap/default_padded_maxY", ptr_g2d_->defaultPaddedMaxY_, 3.0);
+        node_handle_.param(name_of_node_+"/grid2dmap/threshold_occupancy_occupied", ptr_g2d_->thresOccupancyOccupied_, thresOccupancy_);
+        node_handle_.param(name_of_node_+"/grid2dmap/threshold_occupancy_free", ptr_g2d_->thresOccupancyFree_, thresOccupancy_);
+        assert (ptr_g2d_->thresOccupancyOccupied_ < ptr_g2d_->thresOccupancyFree_);
 
         ptr_g2d_->map.info.resolution = tree_->getResolution();
         ptr_g2d_->map.header.frame_id = frame_id_;      
@@ -140,6 +143,13 @@ namespace ns_myocto
         return paddedKey;
     }
 
+    void myocto::ProcessKeyToGrid2dmap (octomap::OcTreeKey key)
+    {
+        //int keySize = 1 << ( maxTreeDepth_ - key->getDepth() );
+
+        //octomap::OcTreeKey minKey = key->getIndexKey();
+    }
+
     void myocto::UpdatePoint (const octomap::point3d &camera_point3d, const octomap::point3d &map_point3d, octomap::KeySet &free_cells, octomap::KeySet &occupied_cells, bool isOutZLimit)
     {
         // free on ray; occupied on endpoint;
@@ -187,6 +197,8 @@ namespace ns_myocto
             //if (occupied_cells.find(*it) == occupied_cells.end()){
             for (auto i = 0; i < multi_free_factor_; i++)
                 tree_->updateNode(*it, false, true);
+            
+            //ProcessKeyToGrid2dmap (*it);
             //}
         }
 

@@ -27,10 +27,10 @@ namespace ProjectMap
         if (pub_all_pts_ || slam_ptr_->getLoopClosing()->loop_detected || slam_ptr_->getTracker()->loop_detected)
         {
             slam_ptr_->getTracker()->loop_detected = slam_ptr_->getLoopClosing()->loop_detected = false;
-
+            std::cout << "publishing all kfs pts ... ";
             geometry_msgs::PoseArray kfs_pts_array_ = GetAllKfsPts ();
             all_kfs_pts_publisher_.publish( kfs_pts_array_ );
-            std::cout << "published all kfs pts" << std::endl;
+            std::cout << "--> published all kfs pts" << std::endl;
         }
         //else 
         if (slam_ptr_->getTracker()->mCurrentFrame.is_keyframe)
@@ -40,7 +40,7 @@ namespace ProjectMap
 
             geometry_msgs::PoseArray kf_pts_array_ = GetSingleKfPts ();
             single_kf_pts_publisher_.publish( kf_pts_array_ );
-            std::cout << "published single kf pts" << " : " << pub_count_ << std::endl;
+            //std::cout << "published single kf pts" << " : " << pub_count_ << std::endl;
         }
 
 
