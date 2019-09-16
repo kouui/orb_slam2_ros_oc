@@ -1,0 +1,6 @@
+roscore
+rviz
+roslaunch orb_slam2_ros orb_slam2_stick_20.launch
+rosbag play ~/datasets/street.bag /cv_camera/image_gray:=/camera/image_raw -s 60
+roslaunch orb_slam2_ros grid_map_mono.launch
+roslaunch orb_slam2_ros myocto_mono.launch

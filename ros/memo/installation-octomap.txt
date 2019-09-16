@@ -1,0 +1,280 @@
+https://www.cnblogs.com/gaoxiang12/p/5041142.html
+https://github.com/OctoMap/octomap/wiki/Compilation-and-Installation-of-OctoMap
+http://octomap.github.io/
+
+ubuntu@ubuntu:~$ sudo apt-get install build-essential cmake doxygen libqt4-dev libqt4-opengl-dev libqglviewer-dev-qt4
+ubuntu@ubuntu:~$ mkdir local
+ubuntu@ubuntu:~$ git clone https://github.com/OctoMap/octomap
+Cloning into 'octomap'...
+remote: Enumerating objects: 6, done.
+remote: Counting objects: 100% (6/6), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 10772 (delta 1), reused 0 (delta 0), pack-reused 10766
+Receiving objects: 100% (10772/10772), 66.36 MiB | 1.27 MiB/s, done.
+Resolving deltas: 100% (7209/7209), done.
+ubuntu@ubuntu:~$ cd 
+.cache/           .gnupg/           Pictures/         .sdformat/
+.config/          .ignition/        .pki/             simulation_ws/
+datasets/         local/            Public/           Templates/
+Desktop/          .local/           .ros/             Videos/
+Documents/        .mozilla/         ros_dev/          .vscode/
+Downloads/        Music/            .rviz/            .vscode-cpptools/
+.gazebo/          octomap/          savefiles/        
+ubuntu@ubuntu:~$ cd octomap/
+ubuntu@ubuntu:~/octomap$ ls
+CMakeLists.txt  dynamicEDT3D  octomap  octovis  README.md  scripts
+ubuntu@ubuntu:~/octomap$ mkdir build
+ubuntu@ubuntu:~/octomap$ cd build
+ubuntu@ubuntu:~/octomap/build$ cmake ..
+-- The C compiler identification is GNU 7.4.0
+-- The CXX compiler identification is GNU 7.4.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+
+
+-- octomap building as Release
+-- Found Doxygen: /usr/bin/doxygen (found version "1.8.13") found components:  doxygen dot 
+
+
+-- Compile octomap using: make
+-- Install octomap using: make install
+--     (be sure to set the correct CMAKE_INSTALL_PREFIX before)
+-- Compile API-documentation using: make docs
+
+
+
+-- octovis building as Release
+-- Found octomap version: 1.9.0
+-- Found OpenGL: /usr/lib/x86_64-linux-gnu/libOpenGL.so   
+-- Looking for Q_WS_X11
+-- Looking for Q_WS_X11 - found
+-- Looking for Q_WS_WIN
+-- Looking for Q_WS_WIN - not found
+-- Looking for Q_WS_QWS
+-- Looking for Q_WS_QWS - not found
+-- Looking for Q_WS_MAC
+-- Looking for Q_WS_MAC - not found
+-- Found Qt4: /usr/bin/qmake (found version "4.8.7") 
+-- QGLViewer includes found in /usr/include/QGLViewer
+-- QGLViewer library found in /usr/lib/x86_64-linux-gnu/libQGLViewer-qt4.so
+-- 
+
+-- viewer octovis will be built
+-- Found Qt4: /usr/bin/qmake (found version "4.8.7") 
+
+
+-- dynamicEDT3D building as Release
+-- Found octomap version: 1.9.0
+-- octomap libraries: /home/ubuntu/octomap/lib/liboctomap.so;/home/ubuntu/octomap/lib/liboctomath.so
+
+
+-- Compile dynamicEDT3D using: make
+-- Install dynamicEDT3D using: make install
+--     (be sure to set the correct CMAKE_INSTALL_PREFIX before)
+-- Compile API-documentation using: make docs_dynamicEDT3D
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/octomap/build
+ubuntu@ubuntu:~/octomap/build$ make -j2
+Scanning dependencies of target octomath
+Scanning dependencies of target octomath-static
+[  1%] Building CXX object octomap/src/math/CMakeFiles/octomath.dir/Vector3.cpp.o
+[  2%] Building CXX object octomap/src/math/CMakeFiles/octomath-static.dir/Vector3.cpp.o
+[  3%] Building CXX object octomap/src/math/CMakeFiles/octomath-static.dir/Quaternion.cpp.o
+[  4%] Building CXX object octomap/src/math/CMakeFiles/octomath.dir/Quaternion.cpp.o
+[  5%] Building CXX object octomap/src/math/CMakeFiles/octomath-static.dir/Pose6D.cpp.o
+[  5%] Building CXX object octomap/src/math/CMakeFiles/octomath.dir/Pose6D.cpp.o
+[  6%] Linking CXX static library ../../../../lib/liboctomath.a
+[  7%] Linking CXX shared library ../../../../lib/liboctomath.so
+[  7%] Built target octomath-static
+Scanning dependencies of target octomap-static
+[  8%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/AbstractOcTree.cpp.o
+[  8%] Built target octomath
+Scanning dependencies of target octomap
+[  9%] Building CXX object octomap/src/CMakeFiles/octomap.dir/AbstractOcTree.cpp.o
+[ 10%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/AbstractOccupancyOcTree.cpp.o
+[ 11%] Building CXX object octomap/src/CMakeFiles/octomap.dir/AbstractOccupancyOcTree.cpp.o
+[ 11%] Building CXX object octomap/src/CMakeFiles/octomap.dir/Pointcloud.cpp.o
+[ 11%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/Pointcloud.cpp.o
+[ 12%] Building CXX object octomap/src/CMakeFiles/octomap.dir/ScanGraph.cpp.o
+[ 13%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/ScanGraph.cpp.o
+[ 14%] Building CXX object octomap/src/CMakeFiles/octomap.dir/CountingOcTree.cpp.o
+[ 15%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/CountingOcTree.cpp.o
+[ 16%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/OcTree.cpp.o
+[ 17%] Building CXX object octomap/src/CMakeFiles/octomap.dir/OcTree.cpp.o
+[ 18%] Building CXX object octomap/src/CMakeFiles/octomap.dir/OcTreeNode.cpp.o
+[ 19%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/OcTreeNode.cpp.o
+[ 19%] Building CXX object octomap/src/CMakeFiles/octomap.dir/OcTreeStamped.cpp.o
+[ 19%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/OcTreeStamped.cpp.o
+[ 20%] Building CXX object octomap/src/CMakeFiles/octomap.dir/ColorOcTree.cpp.o
+[ 21%] Building CXX object octomap/src/CMakeFiles/octomap-static.dir/ColorOcTree.cpp.o
+[ 22%] Linking CXX shared library ../../../lib/liboctomap.so
+[ 23%] Linking CXX static library ../../../lib/liboctomap.a
+[ 23%] Built target octomap-static
+Scanning dependencies of target octovis-static
+[ 23%] Built target octomap
+Scanning dependencies of target dynamicedt3d-static
+[ 24%] Building CXX object octovis/CMakeFiles/octovis-static.dir/src/SceneObject.cpp.o
+[ 25%] Building CXX object dynamicEDT3D/src/CMakeFiles/dynamicedt3d-static.dir/dynamicEDT3D.cpp.o
+[ 26%] Building CXX object octovis/CMakeFiles/octovis-static.dir/src/PointcloudDrawer.cpp.o
+[ 26%] Linking CXX static library ../../../lib/libdynamicedt3d.a
+[ 26%] Built target dynamicedt3d-static
+Scanning dependencies of target dynamicedt3d
+[ 27%] Building CXX object dynamicEDT3D/src/CMakeFiles/dynamicedt3d.dir/dynamicEDT3D.cpp.o
+[ 28%] Building CXX object octovis/CMakeFiles/octovis-static.dir/src/OcTreeDrawer.cpp.o
+[ 29%] Linking CXX shared library ../../../lib/libdynamicedt3d.so
+[ 29%] Built target dynamicedt3d
+Scanning dependencies of target log2graph
+[ 30%] Building CXX object octomap/src/CMakeFiles/log2graph.dir/log2graph.cpp.o
+[ 30%] Building CXX object octovis/CMakeFiles/octovis-static.dir/src/SelectionBox.cpp.o
+[ 30%] Linking CXX executable ../../../bin/log2graph
+[ 30%] Built target log2graph
+Scanning dependencies of target bt2vrml
+[ 31%] Building CXX object octomap/src/CMakeFiles/bt2vrml.dir/bt2vrml.cpp.o
+[ 32%] Building CXX object octovis/CMakeFiles/octovis-static.dir/src/TrajectoryDrawer.cpp.o
+[ 33%] Linking CXX executable ../../../bin/bt2vrml
+[ 34%] Building CXX object octovis/CMakeFiles/octovis-static.dir/src/ColorOcTreeDrawer.cpp.o
+[ 34%] Built target bt2vrml
+Scanning dependencies of target edit_octree
+[ 35%] Building CXX object octomap/src/CMakeFiles/edit_octree.dir/edit_octree.cpp.o
+[ 36%] Linking CXX static library ../../lib/liboctovis.a
+[ 37%] Linking CXX executable ../../../bin/edit_octree
+[ 37%] Built target octovis-static
+Scanning dependencies of target binvox2bt
+[ 37%] Building CXX object octomap/src/CMakeFiles/binvox2bt.dir/binvox2bt.cpp.o
+[ 37%] Built target edit_octree
+Scanning dependencies of target convert_octree
+[ 38%] Building CXX object octomap/src/CMakeFiles/convert_octree.dir/convert_octree.cpp.o
+[ 39%] Linking CXX executable ../../../bin/binvox2bt
+[ 39%] Built target binvox2bt
+Scanning dependencies of target normals_example
+[ 40%] Building CXX object octomap/src/CMakeFiles/normals_example.dir/normals_example.cpp.o
+[ 41%] Linking CXX executable ../../../bin/convert_octree
+[ 41%] Built target convert_octree
+Scanning dependencies of target eval_octree_accuracy
+[ 42%] Building CXX object octomap/src/CMakeFiles/eval_octree_accuracy.dir/eval_octree_accuracy.cpp.o
+[ 43%] Linking CXX executable ../../../bin/eval_octree_accuracy
+[ 43%] Built target eval_octree_accuracy
+Scanning dependencies of target compare_octrees
+[ 44%] Building CXX object octomap/src/CMakeFiles/compare_octrees.dir/compare_octrees.cpp.o
+[ 45%] Linking CXX executable ../../../bin/compare_octrees
+[ 46%] Linking CXX executable ../../../bin/normals_example
+[ 46%] Built target compare_octrees
+Scanning dependencies of target intersection_example
+[ 46%] Built target normals_example
+[ 47%] Building CXX object octomap/src/CMakeFiles/intersection_example.dir/intersection_example.cpp.o
+Scanning dependencies of target octree2pointcloud
+[ 48%] Building CXX object octomap/src/CMakeFiles/octree2pointcloud.dir/octree2pointcloud.cpp.o
+[ 48%] Linking CXX executable ../../../bin/octree2pointcloud
+[ 48%] Built target octree2pointcloud
+Scanning dependencies of target graph2tree
+[ 49%] Building CXX object octomap/src/CMakeFiles/graph2tree.dir/graph2tree.cpp.o
+[ 50%] Linking CXX executable ../../../bin/intersection_example
+[ 50%] Built target intersection_example
+Scanning dependencies of target simple_example
+[ 51%] Building CXX object octomap/src/CMakeFiles/simple_example.dir/simple_example.cpp.o
+[ 52%] Linking CXX executable ../../../bin/graph2tree
+[ 52%] Built target graph2tree
+Scanning dependencies of target test_scans
+[ 53%] Building CXX object octomap/src/testing/CMakeFiles/test_scans.dir/test_scans.cpp.o
+[ 54%] Linking CXX executable ../../../bin/simple_example
+[ 54%] Built target simple_example
+Scanning dependencies of target test_raycasting
+[ 54%] Building CXX object octomap/src/testing/CMakeFiles/test_raycasting.dir/test_raycasting.cpp.o
+[ 55%] Linking CXX executable ../../../../bin/test_scans
+[ 55%] Built target test_scans
+Scanning dependencies of target test_changedkeys
+[ 56%] Building CXX object octomap/src/testing/CMakeFiles/test_changedkeys.dir/test_changedkeys.cpp.o
+[ 57%] Linking CXX executable ../../../../bin/test_raycasting
+[ 57%] Built target test_raycasting
+Scanning dependencies of target test_iterators
+[ 58%] Building CXX object octomap/src/testing/CMakeFiles/test_iterators.dir/test_iterators.cpp.o
+[ 59%] Linking CXX executable ../../../../bin/test_changedkeys
+[ 59%] Built target test_changedkeys
+Scanning dependencies of target test_color_tree
+[ 59%] Building CXX object octomap/src/testing/CMakeFiles/test_color_tree.dir/test_color_tree.cpp.o
+[ 59%] Linking CXX executable ../../../../bin/test_iterators
+[ 59%] Built target test_iterators
+Scanning dependencies of target color_tree_histogram
+[ 60%] Building CXX object octomap/src/testing/CMakeFiles/color_tree_histogram.dir/color_tree_histogram.cpp.o
+[ 61%] Linking CXX executable ../../../../bin/test_color_tree
+[ 61%] Built target test_color_tree
+Scanning dependencies of target unit_tests
+[ 62%] Building CXX object octomap/src/testing/CMakeFiles/unit_tests.dir/unit_tests.cpp.o
+[ 62%] Linking CXX executable ../../../../bin/color_tree_histogram
+[ 62%] Built target color_tree_histogram
+Scanning dependencies of target test_mapcollection
+[ 63%] Building CXX object octomap/src/testing/CMakeFiles/test_mapcollection.dir/test_mapcollection.cpp.o
+[ 64%] Linking CXX executable ../../../../bin/unit_tests
+[ 64%] Built target unit_tests
+Scanning dependencies of target test_io
+[ 65%] Building CXX object octomap/src/testing/CMakeFiles/test_io.dir/test_io.cpp.o
+[ 66%] Linking CXX executable ../../../../bin/test_mapcollection
+[ 66%] Built target test_mapcollection
+Scanning dependencies of target test_pruning
+[ 67%] Building CXX object octomap/src/testing/CMakeFiles/test_pruning.dir/test_pruning.cpp.o
+[ 68%] Linking CXX executable ../../../../bin/test_pruning
+[ 68%] Built target test_pruning
+Scanning dependencies of target octovis-shared
+[ 69%] Building CXX object octovis/CMakeFiles/octovis-shared.dir/src/SceneObject.cpp.o
+[ 70%] Linking CXX executable ../../../../bin/test_io
+[ 70%] Built target test_io
+[ 71%] Building CXX object octovis/CMakeFiles/octovis-shared.dir/src/PointcloudDrawer.cpp.o
+[ 72%] Building CXX object octovis/CMakeFiles/octovis-shared.dir/src/OcTreeDrawer.cpp.o
+[ 73%] Building CXX object octovis/CMakeFiles/octovis-shared.dir/src/SelectionBox.cpp.o
+[ 74%] Building CXX object octovis/CMakeFiles/octovis-shared.dir/src/TrajectoryDrawer.cpp.o
+[ 74%] Building CXX object octovis/CMakeFiles/octovis-shared.dir/src/ColorOcTreeDrawer.cpp.o
+Scanning dependencies of target exampleEDTOctomap
+[ 75%] Building CXX object dynamicEDT3D/src/examples/CMakeFiles/exampleEDTOctomap.dir/exampleEDTOctomap.cpp.o
+[ 76%] Linking CXX shared library ../../lib/liboctovis.so
+[ 76%] Built target octovis-shared
+Scanning dependencies of target exampleEDTOctomapStamped
+[ 77%] Building CXX object dynamicEDT3D/src/examples/CMakeFiles/exampleEDTOctomapStamped.dir/exampleEDTOctomapStamped.cpp.o
+[ 78%] Linking CXX executable ../../../../bin/exampleEDTOctomap
+[ 78%] Built target exampleEDTOctomap
+Scanning dependencies of target exampleEDT3D
+[ 78%] Building CXX object dynamicEDT3D/src/examples/CMakeFiles/exampleEDT3D.dir/exampleEDT3D.cpp.o
+[ 79%] Linking CXX executable ../../../../bin/exampleEDT3D
+[ 79%] Built target exampleEDT3D
+[ 79%] Generating qrc_icons.cxx
+[ 79%] Generating ui_ViewerGui.h
+[ 80%] Generating ui_ViewerSettings.h
+[ 81%] Generating ui_ViewerSettingsPanel.h
+[ 82%] Generating ui_ViewerSettingsPanelCamera.h
+[ 82%] Linking CXX executable ../../../../bin/exampleEDTOctomapStamped
+[ 83%] Generating include/octovis/moc_ViewerGui.cxx
+[ 83%] Generating include/octovis/moc_ViewerWidget.cxx
+[ 84%] Generating include/octovis/moc_ViewerSettings.cxx
+[ 84%] Built target exampleEDTOctomapStamped
+[ 85%] Generating include/octovis/moc_ViewerSettingsPanel.cxx
+[ 86%] Generating include/octovis/moc_ViewerSettingsPanelCamera.cxx
+[ 87%] Generating include/octovis/moc_CameraFollowMode.cxx
+Scanning dependencies of target octovis
+[ 88%] Building CXX object octovis/CMakeFiles/octovis.dir/src/main.cpp.o
+[ 89%] Building CXX object octovis/CMakeFiles/octovis.dir/src/ViewerGui.cpp.o
+[ 90%] Building CXX object octovis/CMakeFiles/octovis.dir/src/ViewerWidget.cpp.o
+[ 91%] Building CXX object octovis/CMakeFiles/octovis.dir/src/ViewerSettings.cpp.o
+[ 91%] Building CXX object octovis/CMakeFiles/octovis.dir/src/ViewerSettingsPanel.cpp.o
+[ 92%] Building CXX object octovis/CMakeFiles/octovis.dir/src/ViewerSettingsPanelCamera.cpp.o
+[ 93%] Building CXX object octovis/CMakeFiles/octovis.dir/src/CameraFollowMode.cpp.o
+[ 94%] Building CXX object octovis/CMakeFiles/octovis.dir/include/octovis/moc_ViewerGui.cxx.o
+[ 95%] Building CXX object octovis/CMakeFiles/octovis.dir/include/octovis/moc_ViewerWidget.cxx.o
+[ 95%] Building CXX object octovis/CMakeFiles/octovis.dir/include/octovis/moc_ViewerSettings.cxx.o
+[ 96%] Building CXX object octovis/CMakeFiles/octovis.dir/include/octovis/moc_ViewerSettingsPanel.cxx.o
+[ 97%] Building CXX object octovis/CMakeFiles/octovis.dir/include/octovis/moc_ViewerSettingsPanelCamera.cxx.o
+[ 98%] Building CXX object octovis/CMakeFiles/octovis.dir/include/octovis/moc_CameraFollowMode.cxx.o
+[100%] Building CXX object octovis/CMakeFiles/octovis.dir/qrc_icons.cxx.o
+[100%] Linking CXX executable ../../bin/octovis
+[100%] Built target octovis
+
