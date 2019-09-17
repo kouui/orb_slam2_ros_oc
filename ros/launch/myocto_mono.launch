@@ -1,7 +1,6 @@
 <launch>
 
-  <node name="myocto" pkg="orb_slam2_ros"
-      type="orb_slam2_ros_myocto" output="screen">
+  <node name="myocto" pkg="orb_slam2_ros" type="orb_slam2_ros_myocto" output="screen">
        <!--<remap from="/camera/image_raw" to="/mynteye/left_rect/image_rect" />-->
 
        <!-- static parameters -->
@@ -11,8 +10,8 @@
        <param name="single_kf_pts_topic" type="string" value="/orb_slam2_mono/single_kf_pts" />
        <param name="frame_id" type="string" value="/map" />
        <param name="resolution" type="double" value="0.02" />
-       <param name="z_min" type="double" value="-0.0" />
-       <param name="z_max" type="double" value="0.1" />
+       <param name="z_min" type="double" value="-0.02" />
+       <param name="z_max" type="double" value="0.30" />
        <!-- occupancy threshhold : less than this value -> free; larger than this value -> occupied -->
        <param name="sensor_model/occupancyThres" type="double" value="0.50" />
        <!-- the occupancy to integrate with one single hit (set occupied) -->
@@ -24,6 +23,9 @@
        <param name="rangeMax" type="double" value="1.5" />
        <param name="multi_free_factor" type="int" value="3" />
        <param name="publish_topic_when_subscribed" type="bool" value="true" />
+       <param name="load_octree" type="bool" value="false" />
+       <param name="octree_load_file" type="str" value="/home/ubuntu/savefiles/street_s60d850_zminm002_zmaxp030.bt" />
+
 
        <!-- grid2dmap parameters -->
        <param name="grid2dmap/default_padded_minX" type="double" value="-1.0" />

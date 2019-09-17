@@ -14,10 +14,34 @@ namespace ns_myocto
 
         //InitializeGrid2dmap ();
 
+        // save octree service
+        service_server_ = node_handle_.advertiseService(name_of_node_+"/save_octree", &myocto::SaveOctreeSrv, this);
+
         
-        // subscriber
-        single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_name_, 1000, &myocto::SingleCallback, this);
-        all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_name_, 1000, &myocto::AllCallback, this);
+        if (load_octree_)
+        {
+            std::cout << "loading octree binary file from " << octree_load_file_name_; << std::endl;
+            bool load_success = tree_->readBinary(octree_load_file_name_);
+            if (load_success)
+            {
+                std::cout << "loading octree binary file --> success " << std::endl;
+                preload_full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, true);
+                PublishPreloadFullMap ();
+            }
+            else
+            {
+                std::cout << "loading octree binary file --> failed " << std::endl;
+                return;
+            }
+            
+            
+        }
+        else
+        {
+            // subscriber
+            single_kf_pts_subscriber_ = node_handle_.subscribe(single_kf_pts_topic_name_, 1000, &myocto::SingleCallback, this);
+            all_kfs_pts_subscriber_ = node_handle_.subscribe(all_kfs_pts_topic_name_, 1000, &myocto::AllCallback, this);
+        }
 
         // publisher
         full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, true);
@@ -42,6 +66,8 @@ namespace ns_myocto
         node_handle_.param(name_of_node_+"/rangeMax", rangeMax_, 3.0);
         node_handle_.param(name_of_node_+"/multi_free_factor", multi_free_factor_, 1);
         node_handle_.param(name_of_node_+"/publish_topic_when_subscribed", publish_topic_when_subscribed_, true);
+        node_handle_.param(name_of_node_+"/load_octree", load_octree_, false);
+        node_handle_.param<std::string>(name_of_node_+"/octree_load_file", octree_load_file_name_, "/home/ubuntu/savefiles/street_s60d850_zminm002_zmaxp030.bt");
     }
 
     void myocto::InitializeTree ()
@@ -324,6 +350,29 @@ namespace ns_myocto
         */
     }
 
+    void myocto::PublishAllTopics_preload ()
+    {
+        bool is_publishPreloadFullMap   = (!publish_topic_when_subscribed_ || (preload_full_map_publisher_.getNumSubscribers() > 0) );
+
+        const ros::Time rostime = ros::Time::now();
+        
+        if (is_publishFullMap)
+        {
+            PublishFullOctomap (rostime);
+        }
+        if (is_publishBinaryMap)
+        {
+            PublishBinaryOctomap (rostime);
+        }
+        /*
+        if (is_publishGrid2dmap)
+        {
+            PublishGrid2dmap (rostime);
+        }
+        */
+    }
+
+
     
 
     void myocto::PublishFullOctomap (const ros::Time& rostime)
@@ -393,6 +442,18 @@ namespace ns_myocto
                     }
     
         return neighborFound;
+    }
+
+    bool myocto::SaveOctreeSrv (orb_slam2_ros::SaveMap::Request &req, orb_slam2_ros::SaveMap::Response &res) 
+    {
+        res.success = tree_->writeBinary(req.name);
+
+        if (res.success)
+            ROS_INFO_STREAM ("Octree object was saved as " << req.name);
+        else
+            ROS_ERROR ("Octree object could not be saved.");
+        
+        return res.success;
     }
 }
 

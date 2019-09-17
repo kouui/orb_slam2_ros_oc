@@ -18,6 +18,9 @@
 #include <utility>
 #include <iostream>
 
+// self-defined message
+#include "orb_slam2_ros/SaveMap.h"
+
 // ROS
 #include <ros/ros.h>
 #include "geometry_msgs/PoseArray.h"
@@ -88,11 +91,14 @@ namespace ns_myocto
         //void PublishGrid2dmap (const ros::Time& rostime);
         void CheckSpeckleNode ();
         bool HaveNeighbor(const octomap::OcTreeKey &nKey);
+        bool SaveOctreeSrv (orb_slam2_ros::SaveMap::Request &req, orb_slam2_ros::SaveMap::Response &res);
 
         ros::NodeHandle node_handle_;
         ros::Subscriber all_kfs_pts_subscriber_;
         ros::Subscriber single_kf_pts_subscriber_;
-        ros::Publisher  binary_map_publisher_, full_map_publisher_, grid2dmap_publisher_;
+        ros::Publisher  binary_map_publisher_, full_map_publisher_;//, grid2dmap_publisher_;
+        ros::Publisher  preload_full_map_publisher_;
+        ros::ServiceServer service_server_;
         std::string name_of_node_;
 
         octomap::OcTree* tree_;
@@ -105,6 +111,8 @@ namespace ns_myocto
         std::string all_kfs_pts_topic_name_;
         std::string single_kf_pts_topic_name_;
         std::string frame_id_;
+        std::string load_octree_;
+        std::string octree_load_file_name_;
         double resolution_;
         double z_min_, z_max_;
         double probHit_, probMiss_, thresMin_, thresMax_, thresOccupancy_;
