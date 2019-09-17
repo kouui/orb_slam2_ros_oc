@@ -40,13 +40,14 @@ endif()
 find_package(Eigen3 3.1.0 REQUIRED)
 
 # octomap
+set(OCTOMAP_DIR /home/ubuntu/local/octomap)
 #find_package(Octomap)
-set (OCTOMAP_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/ros/Thirdparty/octomap/octomap/include)
-set (OCTOMAP_LIBRARY_DIRS ${PROJECT_SOURCE_DIR}/ros/Thirdparty/octomap/lib)
+set (OCTOMAP_INCLUDE_DIRS ${OCTOMAP_DIR}/octomap/include)
+set (OCTOMAP_LIBRARY_DIRS ${OCTOMAP_DIR}/lib)
 # Set library names as absolute paths:
 set(OCTOMAP_LIBRARIES
-  ${PROJECT_SOURCE_DIR}/ros/Thirdparty/octomap/lib/liboctomap.so
-  ${PROJECT_SOURCE_DIR}/ros/Thirdparty/octomap/lib/liboctomath.so
+  ${OCTOMAP_DIR}/lib/liboctomap.so
+  ${OCTOMAP_DIR}/lib/liboctomath.so
 )
 
 set (DYNAMIC_RECONFIGURE_PATH ros/config/dynamic_reconfigure.cfg)

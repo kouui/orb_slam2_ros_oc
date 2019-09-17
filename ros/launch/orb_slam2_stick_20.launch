@@ -1,16 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <launch>
+  
+  <arg name="localize_only" default="false" />
+  <arg name="load_map" default="$(arg localize_only)" />
+  <arg name="map_file" default="/home/ubuntu/savefiles/street_s60d850.bin" />
+  
   <node name="orb_slam2_mono" pkg="orb_slam2_ros"
       type="orb_slam2_ros_mono" output="screen">
        <!--<remap from="/camera/image_raw" to="/mynteye/left_rect/image_rect" />-->
 
        <param name="publish_pointcloud" type="bool" value="true" />
        <param name="publish_pose" type="bool" value="true" />
-       <param name="localize_only" type="bool" value="false" />
+       <param name="localize_only" type="bool" value="$(arg localize_only)" />
        <param name="reset_map" type="bool" value="false" />
 
        <!-- static parameters -->
-       <param name="load_map" type="bool" value="false" />
-       <param name="map_file" type="string" value="/home/ubuntu/savefiles/street_s60d260.bin" />
+       <param name="load_map" type="bool" value="$(arg load_map)" />
+       <param name="map_file" type="string" value="$(arg map_file)" />
        <param name="settings_file" type="string" value="$(find orb_slam2_ros)/orb_slam2/config/Stick_20.yaml" />
        <param name="voc_file" type="string" value="$(find orb_slam2_ros)/orb_slam2/Vocabulary/ORBvoc.txt" />
        

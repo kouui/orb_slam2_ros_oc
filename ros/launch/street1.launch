@@ -2,7 +2,14 @@
 
 <launch>
 
+    <arg name="localize_only" default="false" />
+    <arg name="load_map" default="false" />
+    <arg name="map_file" default="/home/ubuntu/savefiles/street_s60d850.bin" />
+
     <include file="$(find orb_slam2_ros)/ros/launch/orb_slam2_stick_20.launch">
+        <arg name="localize_only" value="$(arg localize_only)" />
+        <arg name="load_map" value="$(arg load_map)" />
+        <arg name="map_file" value="$(arg map_file)" />
     </include>
 
     <include file="$(find orb_slam2_ros)/ros/launch/myocto_mono.launch">
@@ -12,8 +19,8 @@
     </include> 
 
     <!-- Show in Rviz   -->
-    <node name="rviz" pkg="rviz" type="rviz" >
-        <param name="display-config" value="$(find orb_slam2_ros)/ros/rviz/street.rviz"/>
+    <arg name="rviz_config_file" default="$(find orb_slam2_ros)/ros/rviz/street.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)">
     </node>
 
 
