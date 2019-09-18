@@ -2,8 +2,9 @@
 
 <launch>
 
+    <!-- ORB_SLAM2 and KFs publishing -->
     <arg name="localize_only" default="false" />
-    <arg name="load_map" default="false" />
+    <arg name="load_map" default="$(arg localize_only)" />
     <arg name="map_file" default="/home/ubuntu/savefiles/street_s60d850.bin" />
 
     <include file="$(find orb_slam2_ros)/ros/launch/orb_slam2_stick_20.launch">
@@ -12,14 +13,26 @@
         <arg name="map_file" value="$(arg map_file)" />
     </include>
 
+    <!-- 3D octree generation -->
+    <arg name="load_octree" default="false" />
+    <arg name="octree_load_file" default="/home/ubuntu/savefiles/street_s60d850_zminm002_zmaxp030.bt" />
+    <arg name="publish_in_fixed_rate" default="$(arg load_octree)" />
+    <arg name="fixed_publish_rate" default="2" />
+
     <include file="$(find orb_slam2_ros)/ros/launch/myocto_mono.launch">
+        <arg name="load_octree" value="$(arg load_octree)" />
+        <arg name="octree_load_file" value="$(arg octree_load_file)" />
+        <arg name="publish_in_fixed_rate" value="$(arg publish_in_fixed_rate)" />
+        <arg name="fixed_publish_rate" value="$(arg fixed_publish_rate)" />
     </include> 
 
+    <!-- 2D occupancy map generation -->
     <include file="$(find orb_slam2_ros)/ros/launch/myocmap_mono.launch">
     </include> 
 
     <!-- Show in Rviz   -->
     <arg name="rviz_config_file" default="$(find orb_slam2_ros)/ros/rviz/street.rviz" />
+    
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)">
     </node>
 

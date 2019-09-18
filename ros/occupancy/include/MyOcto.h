@@ -72,6 +72,10 @@ namespace ns_myocto
             //delete ptr_g2d_; 
         };
 
+        void PublishAllTopics_FixedRate ();
+
+        bool publish_in_fixed_rate_;
+
     private:
         void GetROSParameter ();
         void InitializeTree ();
@@ -85,7 +89,7 @@ namespace ns_myocto
         void UpdateTree (octomap::KeySet &free_cells, octomap::KeySet &occupied_cells);
         void SingleCallback (const geometry_msgs::PoseArray::ConstPtr& kf_pts_array);
         void AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array);
-        void PublishAllTopics ();
+        void PublishAllTopics_WhenKFsCome ();
         void PublishFullOctomap (const ros::Time& rostime);
         void PublishBinaryOctomap (const ros::Time& rostime);
         //void PublishGrid2dmap (const ros::Time& rostime);
@@ -97,7 +101,6 @@ namespace ns_myocto
         ros::Subscriber all_kfs_pts_subscriber_;
         ros::Subscriber single_kf_pts_subscriber_;
         ros::Publisher  binary_map_publisher_, full_map_publisher_;//, grid2dmap_publisher_;
-        ros::Publisher  preload_full_map_publisher_;
         ros::ServiceServer service_server_;
         std::string name_of_node_;
 
@@ -111,8 +114,9 @@ namespace ns_myocto
         std::string all_kfs_pts_topic_name_;
         std::string single_kf_pts_topic_name_;
         std::string frame_id_;
-        std::string load_octree_;
         std::string octree_load_file_name_;
+        bool load_octree_;
+        int fixed_publish_rate_;
         double resolution_;
         double z_min_, z_max_;
         double probHit_, probMiss_, thresMin_, thresMax_, thresOccupancy_;

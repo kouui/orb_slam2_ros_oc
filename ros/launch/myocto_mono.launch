@@ -1,4 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <launch>
+
+  <arg name="load_octree" default="false" />
+  <arg name="octree_load_file" default="/home/ubuntu/savefiles/street_s60d850_zminm002_zmaxp030.bt" />
+  <arg name="publish_in_fixed_rate" default="$(arg load_octree)" />
+  <arg name="fixed_publish_rate" default="2" />
 
   <node name="myocto" pkg="orb_slam2_ros" type="orb_slam2_ros_myocto" output="screen">
        <!--<remap from="/camera/image_raw" to="/mynteye/left_rect/image_rect" />-->
@@ -23,17 +29,22 @@
        <param name="rangeMax" type="double" value="1.5" />
        <param name="multi_free_factor" type="int" value="3" />
        <param name="publish_topic_when_subscribed" type="bool" value="true" />
-       <param name="load_octree" type="bool" value="false" />
-       <param name="octree_load_file" type="str" value="/home/ubuntu/savefiles/street_s60d850_zminm002_zmaxp030.bt" />
+       <!-- preload map ralated -->
+       <param name="load_octree" type="bool" value="$(arg load_octree)" />
+       <param name="octree_load_file" type="str" value="$(arg octree_load_file)" />
+       <param name="publish_in_fixed_rate" type="bool" value="$(arg publish_in_fixed_rate)" />
+       <param name="fixed_publish_rate" type="int" value="$(arg fixed_publish_rate)" />
 
 
        <!-- grid2dmap parameters -->
+       <!--
        <param name="grid2dmap/default_padded_minX" type="double" value="-1.0" />
        <param name="grid2dmap/default_padded_maxX" type="double" value="5.0" />
        <param name="grid2dmap/default_padded_minY" type="double" value="-3.0" />
        <param name="grid2dmap/default_padded_maxY" type="double" value="3.0" />
        <param name="grid2dmap/threshold_occupancy_occupied" type="double" value="0.5" />
        <param name="grid2dmap/threshold_occupancy_free" type="double" value="0.5" />
+       -->
   </node>
 
 </launch>

@@ -20,13 +20,14 @@ namespace ns_myocto
         
         if (load_octree_)
         {
-            std::cout << "loading octree binary file from " << octree_load_file_name_; << std::endl;
+            std::cout << "loading octree binary file from " << octree_load_file_name_ << std::endl;
             bool load_success = tree_->readBinary(octree_load_file_name_);
             if (load_success)
             {
                 std::cout << "loading octree binary file --> success " << std::endl;
-                preload_full_map_publisher_ = node_handle_.advertise<octomap_msgs::Octomap>(name_of_node_+"/octomap_full", 1, true);
-                PublishPreloadFullMap ();
+                
+                // with preload octree, we'd better publish it in a fixed rate
+                publish_in_fixed_rate_ = true;
             }
             else
             {
@@ -67,6 +68,8 @@ namespace ns_myocto
         node_handle_.param(name_of_node_+"/multi_free_factor", multi_free_factor_, 1);
         node_handle_.param(name_of_node_+"/publish_topic_when_subscribed", publish_topic_when_subscribed_, true);
         node_handle_.param(name_of_node_+"/load_octree", load_octree_, false);
+        node_handle_.param(name_of_node_+"/publish_in_fixed_rate", publish_in_fixed_rate_, false);
+        node_handle_.param(name_of_node_+"/fixed_publish_rate", fixed_publish_rate_, 2);
         node_handle_.param<std::string>(name_of_node_+"/octree_load_file", octree_load_file_name_, "/home/ubuntu/savefiles/street_s60d850_zminm002_zmaxp030.bt");
     }
 
@@ -271,7 +274,7 @@ namespace ns_myocto
         tree_->prune();
 
         // publish
-        PublishAllTopics ();
+        PublishAllTopics_WhenKFsCome ();
     }
     
     void myocto::AllCallback (const geometry_msgs::PoseArray::ConstPtr& kfs_pts_array)
@@ -321,12 +324,39 @@ namespace ns_myocto
         tree_->prune();
 
         // publish
-        PublishAllTopics ();
+        PublishAllTopics_WhenKFsCome ();
         
         loop_closure_being_processed_ = false;
     }
 
-    void myocto::PublishAllTopics ()
+    void myocto::PublishAllTopics_FixedRate ()
+    {
+
+        ros::Rate loop_rate (fixed_publish_rate_);
+
+        while (ros::ok)
+        {
+            bool is_publishFullMap   = (!publish_topic_when_subscribed_ || (full_map_publisher_.getNumSubscribers() > 0) );
+            bool is_publishBinaryMap = (!publish_topic_when_subscribed_ || (binary_map_publisher_.getNumSubscribers() > 0) );
+            //bool is_publishGrid2dmap = (!publish_topic_when_subscribed_ || (grid2dmap_publisher_.getNumSubscribers() > 0) );
+
+            const ros::Time rostime = ros::Time::now();
+            
+            if (is_publishFullMap)
+            {
+                PublishFullOctomap (rostime);
+            }
+            if (is_publishBinaryMap)
+            {
+                PublishBinaryOctomap (rostime);
+            }
+
+            ros::spinOnce();
+            loop_rate.sleep();
+        }
+    }
+
+    void myocto::PublishAllTopics_WhenKFsCome ()
     {
         bool is_publishFullMap   = (!publish_topic_when_subscribed_ || (full_map_publisher_.getNumSubscribers() > 0) );
         bool is_publishBinaryMap = (!publish_topic_when_subscribed_ || (binary_map_publisher_.getNumSubscribers() > 0) );
@@ -349,30 +379,6 @@ namespace ns_myocto
         }
         */
     }
-
-    void myocto::PublishAllTopics_preload ()
-    {
-        bool is_publishPreloadFullMap   = (!publish_topic_when_subscribed_ || (preload_full_map_publisher_.getNumSubscribers() > 0) );
-
-        const ros::Time rostime = ros::Time::now();
-        
-        if (is_publishFullMap)
-        {
-            PublishFullOctomap (rostime);
-        }
-        if (is_publishBinaryMap)
-        {
-            PublishBinaryOctomap (rostime);
-        }
-        /*
-        if (is_publishGrid2dmap)
-        {
-            PublishGrid2dmap (rostime);
-        }
-        */
-    }
-
-
     
 
     void myocto::PublishFullOctomap (const ros::Time& rostime)
@@ -470,7 +476,14 @@ int main(int argc, char** argv)
     ros::NodeHandle node_handle;
     ns_myocto::myocto o3d (node_handle);
 
-    ros::spin();
+    if (o3d.publish_in_fixed_rate_)
+    {
+        o3d.PublishAllTopics_FixedRate ();
+    }
+    else
+    {
+        ros::spin();
+    }
 
     ros::shutdown();
 
